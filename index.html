@@ -7,6 +7,9 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link href="css/main.css" rel="stylesheet">
     <!-- PAGE ICON -->
+    <link rel="icon" type="image/png" href="media/icon.png" />
+    <!-- material icons for transport buttons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <script>
         let map = null
@@ -18,11 +21,13 @@
         let markerContent = [];
         // stores json data for custom locations
         let placesService = null; // ref to Places service
+        let directionsRenderer = null; // for directions functionality
+        let directionsService = null; // for directions functionality
 
         /* language translation */
         function translateIntoFrench() {
             // get text to translate from input field
-            const englishText = encodeURI(document.getElementById('translationText').value)
+            const englishText = encodeURI(document.getElementById('fja_translationText').value)
             const translationLanguage = `fr`
             // build google translate api url with api key and parameters
             const url = `https://translation.googleapis.com/language/translate/v2?key=AIzaSyAiytBZJxcVi_bDM4AL9kbeK6ad5k1f-bE&q=${englishText}&source=en&target=${translationLanguage}`
@@ -32,21 +37,21 @@
                 .then(response => response.json())
                 .then(jsonData => {
                     // show translation container and display result
-                    document.getElementById('frenchTranslationContainer').style.display = 'block'
-                    document.getElementById('translation').innerHTML = jsonData.data.translations[0].translatedText
+                    document.getElementById('fja_frenchTranslationContainer').style.display = 'block'
+                    document.getElementById('fja_translation').innerHTML = jsonData.data.translations[0].translatedText
                 })
                 .catch(error => {
                     console.error('Translation error:', error)
-                    document.getElementById('translation').innerHTML = 'Translation failed'
+                    document.getElementById('fja_translation').innerHTML = 'Translation failed'
                 })
         }
 
         /* currency conversion */
         function convertCurrency() {
             // get values from form inputs
-            const amount = document.getElementById('amount').value;
-            const fromCurrency = document.getElementById('fromCurrency').value;
-            const toCurrency = document.getElementById('toCurrency').value;
+            const amount = document.getElementById('fja_amount').value;
+            const fromCurrency = document.getElementById('fja_fromCurrency').value;
+            const toCurrency = document.getElementById('fja_toCurrency').value;
 
             // used https://www.exchangerate-api.com/
             const apiKey = 'd3241aa1c981fa1cb0fee5d1'
@@ -60,14 +65,14 @@
                     if (data.result === 'success') {
                         // format and display conversion result
                         const result = `${amount} ${fromCurrency} = ${data.conversion_result.toFixed(2)} ${toCurrency}`;
-                        document.getElementById('conversionResult').textContent = result;
+                        document.getElementById('fja_conversionResult').textContent = result;
                     } else {
-                        document.getElementById('conversionResult').textContent = 'Conversion failed';
+                        document.getElementById('fja_conversionResult').textContent = 'Conversion failed';
                     }
                 })
                 .catch(error => {
                     console.error('Currency conversion error:', error);
-                    document.getElementById('conversionResult').textContent = 'Error during conversion';
+                    document.getElementById('fja_conversionResult').textContent = 'Error during conversion';
                 });
         }
 
@@ -75,16 +80,8 @@
             // set initial map center coordinates (dundalk)
             let services_centre_location = {lat: 54.00428271, lng: -6.40210535}
 
-            /*
-            map = new google.maps.Map(document.getElementById("map"), {
-              zoom: 15,
-              center: new google.maps.LatLng(services_centre_location),
-              mapTypeId: google.maps.MapTypeId.ROADMAP
-            });
-            */
-            // added mapId and custom map type controls
             // create new google map instance
-            map = new google.maps.Map(document.getElementById("map"), {
+            map = new google.maps.Map(document.getElementById("fja_map"), {
                 mapId: "MY_MAP_ID",
                 zoom: 15,
                 center: new google.maps.LatLng(services_centre_location),
@@ -99,6 +96,36 @@
 
             // Initialize infoWindow
             infoWindow = new google.maps.InfoWindow()
+
+            // Initialize directions services
+            directionsRenderer = new google.maps.DirectionsRenderer({
+                draggable: true,
+                map: map,
+                panel: document.getElementById("fja_directions")
+            });
+            directionsService = new google.maps.DirectionsService();
+
+            // Add autocomplete to start/end inputs
+            new google.maps.places.Autocomplete(document.getElementById("fja_start"));
+            new google.maps.places.Autocomplete(document.getElementById("fja_end"));
+
+            // Listen for directions changes to update inputs
+            directionsRenderer.addListener("directions_changed", () => {
+                const directions = directionsRenderer.getDirections();
+                const geocoder = new google.maps.Geocoder();
+
+                // update start address
+                let start = directions.geocoded_waypoints[0].place_id;
+                geocoder.geocode({placeId: start}, (results, status) => {
+                    document.getElementById("fja_start").value = results[0].formatted_address;
+                });
+
+                // update end address
+                let end = directions.geocoded_waypoints[1].place_id;
+                geocoder.geocode({placeId: end}, (results, status) => {
+                    document.getElementById("fja_end").value = results[0].formatted_address;
+                });
+            });
 
             /* initialize places service and load json */
             // create google places service instance
@@ -130,22 +157,6 @@
             markers.forEach(marker => marker.map = null)
             markers = []
 
-            /*
-            if(document.getElementById("cafe").checked){
-              service.nearbySearch({
-                location: latLng,
-                radius: 1000,
-                type: 'cafe'
-              }, getNearbyServicesMarkers);
-            }
-            if(document.getElementById("school").checked){
-              service.nearbySearch({
-                location: latLng,
-                radius: 1000,
-                type: 'school'
-              }, getNearbyServicesMarkers);
-            }
-            */
             // get all checked place type checkboxes
             let elements = document.getElementsByName("placeType");
             // for each checked checkbox, search for nearby places
@@ -173,15 +184,6 @@
             map.panTo(new google.maps.LatLng(latLng.lat, latLng.lng))
         }
 
-        /*
-        function getNearbyServicesMarkers(results, status) {
-          if (status === google.maps.places.PlacesServiceStatus.OK) {
-            results.forEach(result => {
-              createMarker(result);
-            })
-          }
-        }
-        */
         // tries to match places with json
         function getNearbyServicesMarkers(results, status) {
             // if places search was successful
@@ -194,31 +196,6 @@
             }
         }
 
-        /*
-        function createMarker(place) {
-          let icon = document.createElement("img")
-          icon.src = place.icon
-          icon.style.width = "30px"
-          icon.style.height = "30px"
-
-          let marker = new google.maps.marker.AdvancedMarkerElement({
-            map: map,
-            content: icon,
-            position: place.geometry.location
-          })
-
-          markers.push(marker)
-
-          if(infoWindow === null) {
-            infoWindow = new google.maps.InfoWindow()
-          }
-
-          google.maps.event.addListener(marker, "click", () => {
-            infoWindow.setContent(place.name)
-            infoWindow.open(map, marker)
-          })
-        }
-        */
         function createMarker(place) {
             // create icon element for marker
             let icon = document.createElement("img")
@@ -376,7 +353,7 @@
         // displays location cards in gallery below map
         function displayLocationGallery() {
             // get gallery container element
-            const galleryContainer = document.getElementById('location-gallery');
+            const galleryContainer = document.getElementById('fja_locationGallery');
             if (!galleryContainer) return;
 
             // clear existing gallery content
@@ -385,14 +362,14 @@
             // create card for each location
             markerContent.forEach((location, index) => {
                 const card = document.createElement('div');
-                card.className = 'location-card';
+                card.className = 'fja_locationCard';
                 card.dataset.index = index;
 
                 // build place details html if available
                 let placeDetailsHtml = '';
                 if (location.placeDetails) {
                     placeDetailsHtml = `
-            <div class="place-details">
+            <div class="fja_placeDetails">
               Rating: ${location.placeDetails.rating} ⭐<br>
               ${location.placeDetails.isOpen === true ? '🟢 Open now' :
                         location.placeDetails.isOpen === false ? '🔴 Closed now' : ''}
@@ -439,39 +416,70 @@
             // apply the styled map
             map.setMapTypeId("hide_poi")
         }
+
+        // calculate route with waypoints and travel mode
+        function calculateRoute(travelMode = "DRIVING") {
+            document.getElementById("fja_transportMode").innerHTML = travelMode.toLowerCase();
+
+            // get waypoints
+            let waypoints = [];
+            let waypointCheckboxes = document.querySelectorAll('input[type="checkbox"][name="waypoint"]');
+            waypointCheckboxes.forEach(waypoint => {
+                if (waypoint.checked) {
+                    waypoints.push({location: waypoint.value});
+                }
+            });
+
+            let start = document.getElementById("fja_start").value;
+            let end = document.getElementById("fja_end").value;
+
+            let request = {
+                origin: start,
+                destination: end,
+                waypoints: waypoints,
+                travelMode: google.maps.TravelMode[travelMode],
+                optimizeWaypoints: true
+            };
+
+            directionsService.route(request, (route, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(route);
+                }
+            });
+        }
     </script>
 </head>
 
 <body>
 <!-- translation -->
 <div style="margin: 15px 0;">
-    <label for="translationText">Text to translate:</label>
-    <input id="translationText" onkeyup="document.getElementById('frenchTranslationContainer').style.display = 'none'"
+    <label for="fja_translationText">Text to translate:</label>
+    <input id="fja_translationText" onkeyup="document.getElementById('fja_frenchTranslationContainer').style.display = 'none'"
            style="width: 300px;"
            type="text"/>
     <input onclick="translateIntoFrench()" type="button" value="Translate into French"/>
 
-    <div id="frenchTranslationContainer" style="margin-top: 10px; display: none;">
+    <div id="fja_frenchTranslationContainer" style="margin-top: 10px; display: none;">
         <label>French Translation: </label>
-        <div id="translation"></div>
+        <div id="fja_translation"></div>
     </div>
 </div>
 
 <!-- currency converter -->
 <div style="margin: 15px 0;">
-    <label for="amount">Amount:</label>
-    <input id="amount" min="0" step="0.01" style="width: 80px;" type="number" value="1">
+    <label for="fja_amount">Amount:</label>
+    <input id="fja_amount" min="0" step="0.01" style="width: 80px;" type="number" value="1">
 
-    <label for="fromCurrency">From:</label>
-    <select id="fromCurrency">
+    <label for="fja_fromCurrency">From:</label>
+    <select id="fja_fromCurrency">
         <option value="EUR">Euro (€)</option>
         <option value="USD">US Dollar ($)</option>
         <option value="GBP">British Pound (£)</option>
         <option value="JPY">Japanese Yen (¥)</option>
     </select>
 
-    <label for="toCurrency">To:</label>
-    <select id="toCurrency">
+    <label for="fja_toCurrency">To:</label>
+    <select id="fja_toCurrency">
         <option value="USD">US Dollar ($)</option>
         <option value="EUR">Euro (€)</option>
         <option value="GBP">British Pound (£)</option>
@@ -480,15 +488,37 @@
 
     <input onclick="convertCurrency()" type="button" value="Convert">&emsp;
 
-    <div id="conversionResult" style="margin-top: 10px; font-weight: bold;"></div>
+    <div id="fja_conversionResult" style="margin-top: 10px; font-weight: bold;"></div>
 </div>
 
-<div id="map"></div>
+<!-- directions control -->
+<div id="fja_controlPanel">
+    <span class="fja_selectLocationLabel">Start:</span>
+    <input type="text" id="fja_start" value="Dundalk Institute of Technology Louth Ireland">
 
-<!--
-<label for="cafe">Cafe:</label><input name="placeType" id="cafe" type="checkbox" value="cafe" onclick="displayMap()" checked>
-<label for="school">School:</label><input name="placeType" id="school" type="checkbox" value="school" onclick="displayMap()">
--->
+    <br>
+    <span class="fja_selectLocationLabel">End:</span>
+    <input type="text" id="fja_end" value="Maynooth University Ireland">
+
+    <h2 class="fja_waypointLocationLabel">via</h2>
+    <label><input type="checkbox" name="waypoint" value="Sligo Ireland" onclick="calculateRoute(document.getElementById('fja_transportMode').innerHTML.toUpperCase())">Sligo</label><br>
+    <label><input type="checkbox" name="waypoint" value="Galway Ireland" onclick="calculateRoute(document.getElementById('fja_transportMode').innerHTML.toUpperCase())">Galway</label><br>
+    <label><input type="checkbox" name="waypoint" value="Cork Ireland" onclick="calculateRoute(document.getElementById('fja_transportMode').innerHTML.toUpperCase())">Cork</label><br>
+</div>
+
+<div class="fja_transportModeButtons">
+    <button onclick="calculateRoute('DRIVING')"><i class="material-icons">directions_car</i> Drive</button>
+    <button onclick="calculateRoute('TRANSIT')"><i class="material-icons">directions_bus</i> Transit</button>
+    <button onclick="calculateRoute('BICYCLING')"><i class="material-icons">directions_bike</i> Bike</button>
+    <button onclick="calculateRoute('WALKING')"><i class="material-icons">directions_walk</i> Walk</button>
+</div>
+
+<h1 id="fja_transportMode">driving</h1>
+<details id="fja_directions"><summary>Directions</summary></details>
+
+<div id="fja_map"></div>
+
+<!-- Place type filters -->
 <div>
     <label for="cafe">Cafe:</label><input checked id="cafe" name="placeType" onclick="displayMap()" type="checkbox"
                                           value="cafe">
@@ -504,9 +534,9 @@
 <!-- locations gallery section -->
 <h2>Saved Locations</h2>
 <p>Click on any location below to view it on the map:</p>
-<div class="location-gallery" id="location-gallery"></div>
+<div class="fja_locationGallery" id="fja_locationGallery"></div>
 
 <!-- Google Maps -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiytBZJxcVi_bDM4AL9kbeK6ad5k1f-bE&loading=async&callback=loadMap&libraries=marker,places"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiytBZJxcVi_bDM4AL9kbeK6ad5k1f-bE&loading=async&callback=loadMap&libraries=places,marker"></script>
 </body>
 </html>

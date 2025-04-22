@@ -3,8 +3,8 @@
     "title": "DkIT",
     "photo": "media/dkit.jpg",
     "content": "Dundalk Institute of Technology is the best place to study computing in Ireland. For more information, see our website www.dkit.ie",
-    "latitude": "53.98485693",
-    "longitude": "-6.39410164"
+    "latitude": "53.984421893729866",
+    "longitude": "-6.3928368495090435"
   },
   {
     "title": "Dundalk",
@@ -26,5 +26,12 @@
     "content": "Rocksalt Cafe is a cafe located in Blackrock, Co. Louth. It is a great place to have lunch.",
     "latitude": "54.00393806231786",
     "longitude": "-6.401023895185024"
+  },
+  {
+    "title": "Hotel du Vin Wimbledon",
+    "photo": "media/hotel_du_vin.jpg",
+    "content": "A stylish boutique hotel located in Cannizaro House, Hotel du Vin offers elegant rooms and fine dining just minutes from Wimbledon Village.",
+    "latitude": "51.4297",
+    "longitude": "-0.2254"
   }
 ]
