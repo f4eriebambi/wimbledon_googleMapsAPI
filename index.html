@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WIP WIMBLEDON MAP</title>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="en" http-equiv="Content-Language"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="css/main.css" rel="stylesheet">
+    <!-- PAGE ICON -->
+
+    <script>
+        let map = null
+        let latLng = {lat: 54.00428271, lng: -6.40210535}
+        /* let placeType = "cafe" */
+        let infoWindow = null
+        let markers = []
+        // array to store all marker objects
+        let markerContent = [];
+        // stores json data for custom locations
+        let placesService = null; // ref to Places service
+
+        /* language translation */
+        function translateIntoFrench() {
+            // get text to translate from input field
+            const englishText = encodeURI(document.getElementById('translationText').value)
+            const translationLanguage = `fr`
+            // build google translate api url with api key and parameters
+            const url = `https://translation.googleapis.com/language/translate/v2?key=AIzaSyAiytBZJxcVi_bDM4AL9kbeK6ad5k1f-bE&q=${englishText}&source=en&target=${translationLanguage}`
+
+            // make api call to google translate
+            fetch(url)
+                .then(response => response.json())
+                .then(jsonData => {
+                    // show translation container and display result
+                    document.getElementById('frenchTranslationContainer').style.display = 'block'
+                    document.getElementById('translation').innerHTML = jsonData.data.translations[0].translatedText
+                })
+                .catch(error => {
+                    console.error('Translation error:', error)
+                    document.getElementById('translation').innerHTML = 'Translation failed'
+                })
+        }
+
+        /* currency conversion */
+        function convertCurrency() {
+            // get values from form inputs
+            const amount = document.getElementById('amount').value;
+            const fromCurrency = document.getElementById('fromCurrency').value;
+            const toCurrency = document.getElementById('toCurrency').value;
+
+            // used https://www.exchangerate-api.com/
+            const apiKey = 'd3241aa1c981fa1cb0fee5d1'
+            // build api url with parameters
+            const url = `https://v6.exchangerate-api.com/v6/${apiKey}/pair/${fromCurrency}/${toCurrency}/${amount}`;
+
+            // make api call to exchange rate service
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        // format and display conversion result
+                        const result = `${amount} ${fromCurrency} = ${data.conversion_result.toFixed(2)} ${toCurrency}`;
+                        document.getElementById('conversionResult').textContent = result;
+                    } else {
+                        document.getElementById('conversionResult').textContent = 'Conversion failed';
+                    }
+                })
+                .catch(error => {
+                    console.error('Currency conversion error:', error);
+                    document.getElementById('conversionResult').textContent = 'Error during conversion';
+                });
+        }
+
+        function loadMap() {
+            // set initial map center coordinates (dundalk)
+            let services_centre_location = {lat: 54.00428271, lng: -6.40210535}
+
+            /*
+            map = new google.maps.Map(document.getElementById("map"), {
+              zoom: 15,
+              center: new google.maps.LatLng(services_centre_location),
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+            */
+            // added mapId and custom map type controls
+            // create new google map instance
+            map = new google.maps.Map(document.getElementById("map"), {
+                mapId: "MY_MAP_ID",
+                zoom: 15,
+                center: new google.maps.LatLng(services_centre_location),
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                mapTypeControlOptions: {
+                    mapTypeIds: ["roadmap", "hide_poi"]
+                }
+            })
+
+            // hide points of interest on map
+            hidePointsOfInterest(map)
+
+            // Initialize infoWindow
+            infoWindow = new google.maps.InfoWindow()
+
+            /* initialize places service and load json */
+            // create google places service instance
+            placesService = new google.maps.places.PlacesService(map);
+            // fetch json data for custom locations
+            fetch('markerContent.json')
+                .then(response => response.json())
+                .then(jsonData => {
+                    // store json data and display locations
+                    markerContent = jsonData;
+                    displayLocationGallery();
+                    displayMap();
+                });
+
+            // add click listener to map to update center position
+            map.addListener("click", (mapsMouseEvent) => {
+                latLng = mapsMouseEvent.latLng.toJSON()
+                displayMap()
+            })
+        }
+
+        function displayMap() {
+            // close any open info windows
+            if (infoWindow !== null) {
+                infoWindow.close()
+            }
+
+            // clear existing markers by removing from map
+            markers.forEach(marker => marker.map = null)
+            markers = []
+
+            /*
+            if(document.getElementById("cafe").checked){
+              service.nearbySearch({
+                location: latLng,
+                radius: 1000,
+                type: 'cafe'
+              }, getNearbyServicesMarkers);
+            }
+            if(document.getElementById("school").checked){
+              service.nearbySearch({
+                location: latLng,
+                radius: 1000,
+                type: 'school'
+              }, getNearbyServicesMarkers);
+            }
+            */
+            // get all checked place type checkboxes
+            let elements = document.getElementsByName("placeType");
+            // for each checked checkbox, search for nearby places
+            elements.forEach(element => {
+                if (element.checked) {
+                    placesService.nearbySearch({
+                        location: latLng,
+                        radius: 1000,
+                        type: element.value
+                    }, getNearbyServicesMarkers);
+                }
+            });
+
+            // flag to track if any place types were checked
+            let checkedPlace = false
+            // if no place types checked, show all custom locations
+            if (!checkedPlace) {
+                markerContent.forEach(location =>
+                    createJsonLocationMarker(location)
+                );
+            }
+
+            // set zoom level and center map on clicked position
+            map.setZoom(15)
+            map.panTo(new google.maps.LatLng(latLng.lat, latLng.lng))
+        }
+
+        /*
+        function getNearbyServicesMarkers(results, status) {
+          if (status === google.maps.places.PlacesServiceStatus.OK) {
+            results.forEach(result => {
+              createMarker(result);
+            })
+          }
+        }
+        */
+        // tries to match places with json
+        function getNearbyServicesMarkers(results, status) {
+            // if places search was successful
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                // create marker for each result and try to match with json data
+                results.forEach(result => {
+                    createMarker(result);
+                    combinePlaceWithJsonData(result);
+                })
+            }
+        }
+
+        /*
+        function createMarker(place) {
+          let icon = document.createElement("img")
+          icon.src = place.icon
+          icon.style.width = "30px"
+          icon.style.height = "30px"
+
+          let marker = new google.maps.marker.AdvancedMarkerElement({
+            map: map,
+            content: icon,
+            position: place.geometry.location
+          })
+
+          markers.push(marker)
+
+          if(infoWindow === null) {
+            infoWindow = new google.maps.InfoWindow()
+          }
+
+          google.maps.event.addListener(marker, "click", () => {
+            infoWindow.setContent(place.name)
+            infoWindow.open(map, marker)
+          })
+        }
+        */
+        function createMarker(place) {
+            // create icon element for marker
+            let icon = document.createElement("img")
+            // get place type to use custom icon
+            let placeType = place.types[0];
+            let iconPath = `media/${placeType}-icon.png`;
+
+            // try to use custom icon, fallback to google icon
+            icon.src = iconPath;
+            icon.onerror = () => {
+                icon.src = place.icon;
+            };
+
+            // set icon size
+            icon.style.width = "30px"
+            icon.style.height = "30px"
+
+            // create advanced marker with icon
+            let marker = new google.maps.marker.AdvancedMarkerElement({
+                map: map,
+                content: icon,
+                position: place.geometry.location
+            })
+
+            // add marker to markers array
+            markers.push(marker)
+
+            // initialize info window if not exists
+            if (infoWindow === null) {
+                infoWindow = new google.maps.InfoWindow()
+            }
+
+            // add click listener to show place name in info window
+            google.maps.event.addListener(marker, "click", () => {
+                infoWindow.setContent(place.name)
+                infoWindow.open(map, marker)
+            })
+        }
+
+        // tries to match google places with locations in our json data
+        function combinePlaceWithJsonData(placeResult) {
+            // loop through all json locations
+            for (let i = 0; i < markerContent.length; i++) {
+                // get coordinates from json
+                const jsonLat = parseFloat(markerContent[i].latitude);
+                const jsonLng = parseFloat(markerContent[i].longitude);
+                // get coordinates from google place
+                const placeLatLng = placeResult.geometry.location.toJSON();
+                // calculate distance between points
+                const distance = calculateDistance(jsonLat, jsonLng, placeLatLng.lat, placeLatLng.lng);
+
+                // if locations are close (within 50 meters)
+                if (distance < 0.05) {
+                    // get additional details for this place
+                    placesService.getDetails({
+                        placeId: placeResult.place_id,
+                        fields: ['name', 'rating', 'formatted_phone_number', 'opening_hours', 'website']
+                    }, (placeDetails, status) => {
+                        if (status === google.maps.places.PlacesServiceStatus.OK) {
+                            // store place details with json data
+                            markerContent[i].placeDetails = {
+                                rating: placeDetails.rating || 'N/A',
+                                phone: placeDetails.formatted_phone_number || 'N/A',
+                                isOpen: placeDetails.opening_hours?.isOpen() ?? 'Unknown',
+                                website: placeDetails.website || 'N/A',
+                                placeId: placeResult.place_id,
+                                types: placeResult.types
+                            };
+                            // update gallery with new details
+                            displayLocationGallery();
+                        }
+                    });
+                    break;
+                }
+            }
+        }
+
+        // calculates distance between two coordinates in km
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // earth radius in km
+            // convert degrees to radians
+            const dLat = deg2rad(lat2 - lat1);
+            const dLon = deg2rad(lon2 - lon1);
+            // haversine formula
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        // converts degrees to radians
+        function deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        }
+
+        // creates markers for our custom locations
+        function createJsonLocationMarker(location) {
+            // create position object from location data
+            const position = {
+                lat: parseFloat(location.latitude),
+                lng: parseFloat(location.longitude)
+            };
+
+            // create custom icon for marker
+            let icon = document.createElement("img");
+            icon.src = "media/marker-icon.png";
+            icon.style.width = "30px";
+            icon.style.height = "30px";
+
+            // create advanced marker
+            let marker = new google.maps.marker.AdvancedMarkerElement({
+                map: map,
+                content: icon,
+                position: position
+            });
+
+            // add marker to markers array
+            markers.push(marker);
+
+            // build html content for info window
+            let contentString = `
+        <div style="width:250px">
+          <h3>${location.title}</h3>
+          <img src="${location.photo}" style="width:100%;max-height:150px;object-fit:cover">
+          <p>${location.content}</p>
+      `;
+
+            // add place details if available
+            if (location.placeDetails) {
+                contentString += `
+          <div style="font-size:0.9em;border-top:1px solid #eee;padding-top:8px;margin-top:8px">
+            <p><strong>Rating:</strong> ${location.placeDetails.rating}</p>
+            <p><strong>Phone:</strong> ${location.placeDetails.phone}</p>
+            <p><strong>Currently Open:</strong> ${location.placeDetails.isOpen}</p>
+            <p><strong>Website:</strong> <a href="${location.placeDetails.website}" target="_blank">Visit website</a></p>
+          </div>
+        `;
+            }
+
+            contentString += `</div>`;
+
+            // add click listener to show info window
+            google.maps.event.addListener(marker, "click", () => {
+                infoWindow.setContent(contentString);
+                infoWindow.open(map, marker);
+            });
+
+            // center map on this marker
+            map.setCenter(position);
+            return marker;
+        }
+
+        // displays location cards in gallery below map
+        function displayLocationGallery() {
+            // get gallery container element
+            const galleryContainer = document.getElementById('location-gallery');
+            if (!galleryContainer) return;
+
+            // clear existing gallery content
+            galleryContainer.innerHTML = '';
+
+            // create card for each location
+            markerContent.forEach((location, index) => {
+                const card = document.createElement('div');
+                card.className = 'location-card';
+                card.dataset.index = index;
+
+                // build place details html if available
+                let placeDetailsHtml = '';
+                if (location.placeDetails) {
+                    placeDetailsHtml = `
+            <div class="place-details">
+              Rating: ${location.placeDetails.rating} ⭐<br>
+              ${location.placeDetails.isOpen === true ? '🟢 Open now' :
+                        location.placeDetails.isOpen === false ? '🔴 Closed now' : ''}
+            </div>
+          `;
+                }
+
+                // set card html content
+                card.innerHTML = `
+          <img src="${location.photo}" alt="${location.title}">
+          <h3>${location.title}</h3>
+          <p>${location.content.substring(0, 100)}${location.content.length > 100 ? '...' : ''}</p>
+          ${placeDetailsHtml}
+        `;
+
+                // add click handler to center map on this location
+                card.addEventListener('click', () => {
+                    markers.forEach(marker => marker.map = null);
+                    markers = [];
+                    createJsonLocationMarker(location);
+                });
+
+                // add card to gallery
+                galleryContainer.appendChild(card);
+            });
+        }
+
+        function hidePointsOfInterest(map) {
+            // style definition to hide points of interest
+            let styles = [
+                {
+                    "featureType": "poi",
+                    "stylers": [{"visibility": "off"}]
+                }
+            ]
+
+            // create styled map type with poi hidden
+            let styledMapType = new google.maps.StyledMapType(styles, {
+                name: "POI Hidden",
+                alt: "Hide Points of Interest"
+            })
+            map.mapTypes.set("hide_poi", styledMapType)
+
+            // apply the styled map
+            map.setMapTypeId("hide_poi")
+        }
+    </script>
+</head>
+
+<body>
+<!-- translation -->
+<div style="margin: 15px 0;">
+    <label for="translationText">Text to translate:</label>
+    <input id="translationText" onkeyup="document.getElementById('frenchTranslationContainer').style.display = 'none'"
+           style="width: 300px;"
+           type="text"/>
+    <input onclick="translateIntoFrench()" type="button" value="Translate into French"/>
+
+    <div id="frenchTranslationContainer" style="margin-top: 10px; display: none;">
+        <label>French Translation: </label>
+        <div id="translation"></div>
+    </div>
+</div>
+
+<!-- currency converter -->
+<div style="margin: 15px 0;">
+    <label for="amount">Amount:</label>
+    <input id="amount" min="0" step="0.01" style="width: 80px;" type="number" value="1">
+
+    <label for="fromCurrency">From:</label>
+    <select id="fromCurrency">
+        <option value="EUR">Euro (€)</option>
+        <option value="USD">US Dollar ($)</option>
+        <option value="GBP">British Pound (£)</option>
+        <option value="JPY">Japanese Yen (¥)</option>
+    </select>
+
+    <label for="toCurrency">To:</label>
+    <select id="toCurrency">
+        <option value="USD">US Dollar ($)</option>
+        <option value="EUR">Euro (€)</option>
+        <option value="GBP">British Pound (£)</option>
+        <option value="JPY">Japanese Yen (¥)</option>
+    </select>
+
+    <input onclick="convertCurrency()" type="button" value="Convert">&emsp;
+
+    <div id="conversionResult" style="margin-top: 10px; font-weight: bold;"></div>
+</div>
+
+<div id="map"></div>
+
+<!--
+<label for="cafe">Cafe:</label><input name="placeType" id="cafe" type="checkbox" value="cafe" onclick="displayMap()" checked>
+<label for="school">School:</label><input name="placeType" id="school" type="checkbox" value="school" onclick="displayMap()">
+-->
+<div>
+    <label for="cafe">Cafe:</label><input checked id="cafe" name="placeType" onclick="displayMap()" type="checkbox"
+                                          value="cafe">
+    <label for="school">School:</label><input id="school" name="placeType" onclick="displayMap()" type="checkbox"
+                                              value="school">
+    <label for="atm">ATM:</label><input id="atm" name="placeType" onclick="displayMap()" type="checkbox" value="atm">
+</div>
+
+<p>Show selected place types within 1km of where the map is clicked and also zoom onto the point that was clicked on the
+    map.</p>
+<p>If you click on a marker, it will show the name of the place. It will not show any other details.</p>
+
+<!-- locations gallery section -->
+<h2>Saved Locations</h2>
+<p>Click on any location below to view it on the map:</p>
+<div class="location-gallery" id="location-gallery"></div>
+
+<!-- Google Maps -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiytBZJxcVi_bDM4AL9kbeK6ad5k1f-bE&loading=async&callback=loadMap&libraries=marker,places"></script>
+</body>
+</html>

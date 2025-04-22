@@ -1,0 +1,30 @@
+[
+  {
+    "title": "DkIT",
+    "photo": "media/dkit.jpg",
+    "content": "Dundalk Institute of Technology is the best place to study computing in Ireland. For more information, see our website www.dkit.ie",
+    "latitude": "53.98485693",
+    "longitude": "-6.39410164"
+  },
+  {
+    "title": "Dundalk",
+    "photo": "media/dundalk.jpg",
+    "content": "Dundalk (Irish: Dún Dealgan) is the county town of County Louth, Ireland. The town is situated on the Castletown River, which flows into Dundalk Bay on the north-east coast of Ireland, and is halfway between Dublin and Belfast, close to and south of the border with Northern Ireland.",
+    "latitude": "54.00428271",
+    "longitude": "-6.40210535"
+  },
+  {
+    "title": "Blackrock",
+    "photo": "media/blackrock.jpg",
+    "content": "Blackrock is a seaside village that is close to DkIT.",
+    "latitude": "53.96251869",
+    "longitude": "-6.36627104"
+  },
+  {
+    "title": "Rocksalt Cafe",
+    "photo": "media/rocksalt.jpg",
+    "content": "Rocksalt Cafe is a cafe located in Blackrock, Co. Louth. It is a great place to have lunch.",
+    "latitude": "54.00393806231786",
+    "longitude": "-6.401023895185024"
+  }
+]

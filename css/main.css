@@ -1,0 +1,86 @@
+#map {
+  width: 600px;
+  height: 600px;
+  border: thin solid #ccc;
+  margin-bottom: 20px;
+}
+
+.location-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.location-card {
+  width: 200px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.location-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.location-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 3px;
+}
+
+.location-card h3 {
+  margin: 10px 0 5px;
+}
+
+.location-card p {
+  font-size: 0.9em;
+  color: #666;
+  margin: 5px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.place-details {
+  margin-top: 5px;
+  font-size: 0.85em;
+  color: #0066cc;
+}
+
+/* Add to your existing styles */
+#translationText {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+#frenchTranslationContainer {
+  padding: 10px;
+  background: #f0f0f0;
+  border-radius: 5px;
+}
+
+#translation {
+  padding: 5px;
+  font-weight: bold;
+}
+
+/* Add to your existing styles */
+#amount, #fromCurrency, #toCurrency {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+#conversionResult {
+  padding: 10px;
+  background: #f0f0f0;
+  border-radius: 5px;
+  display: inline-block;
+  min-width: 100px;
+  margin-bottom: -5px;
+}
