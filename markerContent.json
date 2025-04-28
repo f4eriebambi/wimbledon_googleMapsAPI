@@ -1,37 +1,122 @@
 [
   {
-    "title": "DkIT",
-    "photo": "media/dkit.jpg",
-    "content": "Dundalk Institute of Technology is the best place to study computing in Ireland. For more information, see our website www.dkit.ie",
-    "latitude": "53.984421893729866",
-    "longitude": "-6.3928368495090435"
+    "title": "Wimbledon Lawn Tennis Museum",
+    "photo": "media/wimbledon_museum.jpg",
+    "content": "Located at the All England Club, the Wimbledon Lawn Tennis Museum is a must-visit for tennis fans. Explore the history of the Championships and see memorabilia from tennis legends.",
+    "latitude": "51.4349",
+    "longitude": "-0.2146",
+    "tags": ["museum", "sports", "historical"]
   },
   {
-    "title": "Dundalk",
-    "photo": "media/dundalk.jpg",
-    "content": "Dundalk (Irish: Dún Dealgan) is the county town of County Louth, Ireland. The town is situated on the Castletown River, which flows into Dundalk Bay on the north-east coast of Ireland, and is halfway between Dublin and Belfast, close to and south of the border with Northern Ireland.",
-    "latitude": "54.00428271",
-    "longitude": "-6.40210535"
-  },
-  {
-    "title": "Blackrock",
-    "photo": "media/blackrock.jpg",
-    "content": "Blackrock is a seaside village that is close to DkIT.",
-    "latitude": "53.96251869",
-    "longitude": "-6.36627104"
-  },
-  {
-    "title": "Rocksalt Cafe",
-    "photo": "media/rocksalt.jpg",
-    "content": "Rocksalt Cafe is a cafe located in Blackrock, Co. Louth. It is a great place to have lunch.",
-    "latitude": "54.00393806231786",
-    "longitude": "-6.401023895185024"
+    "title": "Wimbledon Common",
+    "photo": "media/wimbledon_common.jpg",
+    "content": "Wimbledon Common is a large open space perfect for walking, cycling, or enjoying a picnic. It's home to wildlife and the famous Windmill Museum.",
+    "latitude": "51.4372",
+    "longitude": "-0.2421",
+    "tags": ["nature", "walking", "landmark"]
   },
   {
     "title": "Hotel du Vin Wimbledon",
     "photo": "media/hotel_du_vin.jpg",
     "content": "A stylish boutique hotel located in Cannizaro House, Hotel du Vin offers elegant rooms and fine dining just minutes from Wimbledon Village.",
     "latitude": "51.4297",
-    "longitude": "-0.2254"
+    "longitude": "-0.2254",
+    "tags": ["hotel", "luxury", "dining"]
+  },
+  {
+    "title": "The Ivy Café Wimbledon Village",
+    "photo": "media/ivy_cafe.jpg",
+    "content": "An upscale café in the heart of Wimbledon Village, The Ivy serves modern British cuisine in a chic setting.",
+    "latitude": "51.4287",
+    "longitude": "-0.2192",
+    "tags": ["restaurant", "cafe", "british"]
+  },
+  {
+    "title": "Wimbledon Station",
+    "photo": "media/wimbledon_station.jpg",
+    "content": "A major transport hub connecting tourists to Central London, Wimbledon Station serves National Rail, London Underground, and Tramlink services.",
+    "latitude": "51.4211",
+    "longitude": "-0.2060",
+    "tags": ["transport", "station", "hub"]
+  },
+  {
+    "title": "Polka Theatre",
+    "photo": "media/polka_theatre.jpg",
+    "content": "A unique venue dedicated to children’s theatre, the Polka Theatre offers performances, workshops, and play areas for families.",
+    "latitude": "51.4202",
+    "longitude": "-0.2093",
+    "tags": ["theatre", "family", "arts"]
+  },
+  {
+    "title": "Wimbledon Village Stables",
+    "photo": "media/village_stables.jpg",
+    "content": "Enjoy a horse ride on Wimbledon Common with this long-established riding school offering lessons and hacks.",
+    "latitude": "51.4285",
+    "longitude": "-0.2219",
+    "tags": ["outdoor", "horse riding", "nature"]
+  },
+  {
+    "title": "The All England Lawn Tennis Club (Tour Access)",
+    "photo": "media/all_england_club.jpg",
+    "content": "Home of the Wimbledon Championships, the All England Club offers guided tours of the historic grounds, including Centre Court and press rooms (note: courts are not available for public play).",
+    "latitude": "51.4342",
+    "longitude": "-0.2146",
+    "tags": ["tennis", "tour", "landmark"]
+  },
+  {
+    "title": "Wimbledon Park Tennis Courts",
+    "photo": "media/wimbledon_park_courts.jpg",
+    "content": "Wimbledon Park offers 20 public tennis courts available for booking. It's a popular spot for both locals and visitors to enjoy a match in the open air.",
+    "latitude": "51.4324",
+    "longitude": "-0.2039",
+    "tags": ["tennis", "public courts", "sports"]
+  },
+  {
+    "title": "AELTC Community Sports Ground",
+    "photo": "media/aeltc_community_courts.jpg",
+    "content": "This community sports ground near Raynes Park is run by the AELTC and open to the public for tennis bookings during select hours. It’s part of Wimbledon’s local legacy outreach.",
+    "latitude": "51.4081",
+    "longitude": "-0.2274",
+    "tags": ["tennis", "public", "grass", "community"]
+  },
+  {
+    "title": "Centre Court",
+    "photo": "media/centre_court.jpg",
+    "content": "Centre Court is the most iconic tennis stadium at Wimbledon, known for hosting the biggest matches of The Championships. While not open for public play, it's accessible via guided tours.",
+    "latitude": "51.4342",
+    "longitude": "-0.2146",
+    "tags": ["tennis", "landmark", "tour", "main court"]
+  },
+  {
+    "title": "No. 1 Court",
+    "photo": "media/no1_court.jpg",
+    "content": "No. 1 Court is one of the primary match courts used during the Wimbledon Championships. It features a retractable roof and is part of the All England Club tours.",
+    "latitude": "51.4346",
+    "longitude": "-0.2134",
+    "tags": ["tennis", "stadium", "tour", "main court"]
+  },
+  {
+    "title": "No. 2 Court",
+    "photo": "media/no2_court.jpg",
+    "content": "Often referred to as the 'Graveyard of Champions,' No. 2 Court is known for its surprising upsets. Visitors can see it during All England Club tours.",
+    "latitude": "51.4345",
+    "longitude": "-0.2152",
+    "tags": ["tennis", "historic", "tour", "main court"]
+  },
+  {
+    "title": "Aorangi Park Practice Courts",
+    "photo": "media/aorangi_practice.jpg",
+    "content": "Located behind the main courts, Aorangi Park is where professional players practice during Wimbledon. It's occasionally visible to the public during events.",
+    "latitude": "51.4356",
+    "longitude": "-0.2165",
+    "tags": ["tennis", "practice", "professional", "not for play"]
+  },
+  {
+    "title": "American Clay & Acrylic Courts",
+    "photo": "media/clay_acrylic_courts.jpg",
+    "content": "These six American clay courts and two acrylic surfaces are part of the club’s advanced training and development setup — not open to the public, but interesting for tennis enthusiasts.",
+    "latitude": "51.4338",
+    "longitude": "-0.2173",
+    "tags": ["tennis", "training", "surface", "not for play"]
   }
 ]

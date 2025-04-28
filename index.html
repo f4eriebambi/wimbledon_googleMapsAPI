@@ -13,7 +13,7 @@
 
     <script>
         let map = null
-        let latLng = {lat: 54.00428271, lng: -6.40210535}
+        let latLng = {lat: 51.41856933437865, lng: -0.21294316172093747}
         /* let placeType = "cafe" */
         let infoWindow = null
         let markers = []
@@ -77,8 +77,8 @@
         }
 
         function loadMap() {
-            // set initial map center coordinates (dundalk)
-            let services_centre_location = {lat: 54.00428271, lng: -6.40210535}
+            // set initial map center coordinates (wimbledon)
+            let services_centre_location = {lat: 51.41856933437865, lng: -0.21294316172093747}
 
             // create new google map instance
             map = new google.maps.Map(document.getElementById("fja_map"), {
@@ -520,10 +520,12 @@
 
 <!-- Place type filters -->
 <div>
-    <label for="cafe">Cafe:</label><input checked id="cafe" name="placeType" onclick="displayMap()" type="checkbox"
-                                          value="cafe">
-    <label for="school">School:</label><input id="school" name="placeType" onclick="displayMap()" type="checkbox"
-                                              value="school">
+    <label for="cafe">Cafe:</label><input checked id="cafe" name="placeType" onclick="displayMap()" type="checkbox" value="cafe">
+
+    <label for="school">School:</label><input id="school" name="placeType" onclick="displayMap()" type="checkbox" value="school">
+
+    <label for="university">Uni:</label><input id="university" name="placeType" onclick="displayMap()" type="checkbox" value="university">
+
     <label for="atm">ATM:</label><input id="atm" name="placeType" onclick="displayMap()" type="checkbox" value="atm">
 </div>
 
