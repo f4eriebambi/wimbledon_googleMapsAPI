@@ -18,11 +18,15 @@
         let infoWindow = null
         let markers = []
         // array to store all marker objects
-        let markerContent = [];
+        let markerContent = []
         // stores json data for custom locations
-        let placesService = null; // ref to Places service
-        let directionsRenderer = null; // for directions functionality
-        let directionsService = null; // for directions functionality
+        let placesService = null  // ref to Places service
+        let directionsRenderer = null
+        let directionsService = null
+        let allTags = new Set()
+        let activeTags = new Set()
+        let searchValue = ""
+        let sortOption = "default"
 
         /* language translation */
         function translateIntoFrench() {
@@ -46,34 +50,67 @@
                 })
         }
 
-        /* currency conversion */
+        /* currency conversion https://www.exchangerate-api.com/ */
         function convertCurrency() {
             // get values from form inputs
-            const amount = document.getElementById('fja_amount').value;
-            const fromCurrency = document.getElementById('fja_fromCurrency').value;
-            const toCurrency = document.getElementById('fja_toCurrency').value;
+            const amount = document.getElementById('fja_amount').value
+            const fromCurrency = document.getElementById('fja_fromCurrency').value
+            const toCurrency = document.getElementById('fja_toCurrency').value
 
             // used https://www.exchangerate-api.com/
             const apiKey = 'd3241aa1c981fa1cb0fee5d1'
             // build api url with parameters
-            const url = `https://v6.exchangerate-api.com/v6/${apiKey}/pair/${fromCurrency}/${toCurrency}/${amount}`;
+            // https://www.exchangerate-api.com/docs/standard-requests
+            const url = `https://v6.exchangerate-api.com/v6/${apiKey}/pair/${fromCurrency}/${toCurrency}/${amount}`
 
             // make api call to exchange rate service
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
+                    // exchangerate-api.com response docs
                     if (data.result === 'success') {
                         // format and display conversion result
-                        const result = `${amount} ${fromCurrency} = ${data.conversion_result.toFixed(2)} ${toCurrency}`;
-                        document.getElementById('fja_conversionResult').textContent = result;
+                        const result = `${amount} ${fromCurrency} = ${data.conversion_result.toFixed(2)} ${toCurrency}`
+                        document.getElementById('fja_conversionResult').textContent = result
                     } else {
-                        document.getElementById('fja_conversionResult').textContent = 'Conversion failed';
+                        document.getElementById('fja_conversionResult').textContent = 'Conversion failed'
                     }
                 })
                 .catch(error => {
-                    console.error('Currency conversion error:', error);
-                    document.getElementById('fja_conversionResult').textContent = 'Error during conversion';
+                    console.error('Currency conversion error:', error)
+                    document.getElementById('fja_conversionResult').textContent = 'Error during conversion'
                 });
+        }
+
+        // calculate route with waypoints and travel mode
+        function calculateRoute(travelMode = "DRIVING") {
+            document.getElementById("fja_transportMode").innerHTML = travelMode.toLowerCase()
+
+            // get waypoints
+            let waypoints = []
+            let waypointCheckboxes = document.querySelectorAll('input[type="checkbox"][name="waypoint"]')
+            waypointCheckboxes.forEach(waypoint => {
+                if (waypoint.checked) {
+                    waypoints.push({location: waypoint.value})
+                }
+            })
+
+            let start = document.getElementById("fja_start").value
+            let end = document.getElementById("fja_end").value
+
+            let request = {
+                origin: start,
+                destination: end,
+                waypoints: waypoints,
+                travelMode: google.maps.TravelMode[travelMode],
+                optimizeWaypoints: true
+            }
+
+            directionsService.route(request, (route, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(route)
+                }
+            })
         }
 
         function loadMap() {
@@ -94,57 +131,115 @@
             // hide points of interest on map
             hidePointsOfInterest(map)
 
-            // Initialize infoWindow
+            // initialize infoWindow
             infoWindow = new google.maps.InfoWindow()
 
-            // Initialize directions services
+            // initialize directions services
             directionsRenderer = new google.maps.DirectionsRenderer({
                 draggable: true,
                 map: map,
                 panel: document.getElementById("fja_directions")
-            });
-            directionsService = new google.maps.DirectionsService();
+            })
+            directionsService = new google.maps.DirectionsService()
 
-            // Add autocomplete to start/end inputs
-            new google.maps.places.Autocomplete(document.getElementById("fja_start"));
-            new google.maps.places.Autocomplete(document.getElementById("fja_end"));
+            // add autocomplete to start/end inputs
+            new google.maps.places.Autocomplete(document.getElementById("fja_start"))
+            new google.maps.places.Autocomplete(document.getElementById("fja_end"))
 
-            // Listen for directions changes to update inputs
+            // listen for directions changes to update inputs
             directionsRenderer.addListener("directions_changed", () => {
-                const directions = directionsRenderer.getDirections();
-                const geocoder = new google.maps.Geocoder();
+                const directions = directionsRenderer.getDirections()
+                const geocoder = new google.maps.Geocoder()
 
                 // update start address
-                let start = directions.geocoded_waypoints[0].place_id;
+                let start = directions.geocoded_waypoints[0].place_id
                 geocoder.geocode({placeId: start}, (results, status) => {
-                    document.getElementById("fja_start").value = results[0].formatted_address;
-                });
+                    document.getElementById("fja_start").value = results[0].formatted_address
+                })
 
                 // update end address
-                let end = directions.geocoded_waypoints[1].place_id;
+                let end = directions.geocoded_waypoints[1].place_id
                 geocoder.geocode({placeId: end}, (results, status) => {
-                    document.getElementById("fja_end").value = results[0].formatted_address;
-                });
-            });
+                    document.getElementById("fja_end").value = results[0].formatted_address
+                })
+            })
 
             /* initialize places service and load json */
             // create google places service instance
-            placesService = new google.maps.places.PlacesService(map);
+            placesService = new google.maps.places.PlacesService(map)
             // fetch json data for custom locations
             fetch('markerContent.json')
                 .then(response => response.json())
                 .then(jsonData => {
                     // store json data and display locations
-                    markerContent = jsonData;
-                    displayLocationGallery();
-                    displayMap();
-                });
+                    markerContent = jsonData
+                    document.getElementById("fja_start").value = "Wimbledon Station, London, UK"
+                    document.getElementById("fja_end").value = "All England Lawn Tennis Club, London, UK"
+
+                    createWaypointOptions()
+                    displayLocationGallery()
+                    displayMap()
+                    initializeFilters()
+                })
 
             // add click listener to map to update center position
             map.addListener("click", (mapsMouseEvent) => {
                 latLng = mapsMouseEvent.latLng.toJSON()
                 displayMap()
             })
+        }
+
+        function hidePointsOfInterest(map) {
+            // style definition to hide points of interest
+            let styles = [
+                {
+                    "featureType": "poi",
+                    "stylers": [{"visibility": "off"}]
+                }
+            ]
+
+            // create styled map type with poi hidden
+            let styledMapType = new google.maps.StyledMapType(styles, {
+                name: "POI Hidden",
+                alt: "Hide Points of Interest"
+            })
+            map.mapTypes.set("hide_poi", styledMapType)
+
+            // apply the styled map
+            map.setMapTypeId("hide_poi")
+        }
+
+        function createWaypointOptions() {
+            const waypointContainer = document.getElementById("fja_waypoints")
+            if (!waypointContainer) return
+
+            waypointContainer.innerHTML = ""
+
+            // going through my location to get wp options
+            for (let i = 0; i < markerContent.length; i++) {
+                const location = markerContent[i]
+                if (!location.title) continue
+
+
+                const waypointLabel = document.createElement("label")
+                waypointLabel.className = "fja_waypointLabel"
+
+                // waypoint checkboxs
+                const waypointCheckbox = document.createElement("input")
+                waypointCheckbox.type = "checkbox"
+                waypointCheckbox.name = "waypoint"
+                waypointCheckbox.value = location.title + ", Wimbledon, London, UK"
+                waypointCheckbox.addEventListener("change", function() {
+                    calculateRoute(document.getElementById("fja_transportMode").innerHTML.toUpperCase())
+                })
+
+                // building checkbox structure
+                waypointLabel.append(waypointCheckbox)
+                waypointLabel.append(document.createTextNode(" " + location.title))
+
+                waypointContainer.append(waypointLabel)
+                waypointContainer.append(document.createElement("br"))
+            }
         }
 
         function displayMap() {
@@ -158,7 +253,7 @@
             markers = []
 
             // get all checked place type checkboxes
-            let elements = document.getElementsByName("placeType");
+            let elements = document.getElementsByName("placeType")
             // for each checked checkbox, search for nearby places
             elements.forEach(element => {
                 if (element.checked) {
@@ -166,9 +261,9 @@
                         location: latLng,
                         radius: 1000,
                         type: element.value
-                    }, getNearbyServicesMarkers);
+                    }, getNearbyServicesMarkers)
                 }
-            });
+            })
 
             // flag to track if any place types were checked
             let checkedPlace = false
@@ -176,7 +271,7 @@
             if (!checkedPlace) {
                 markerContent.forEach(location =>
                     createJsonLocationMarker(location)
-                );
+                )
             }
 
             // set zoom level and center map on clicked position
@@ -184,30 +279,73 @@
             map.panTo(new google.maps.LatLng(latLng.lat, latLng.lng))
         }
 
-        // tries to match places with json
-        function getNearbyServicesMarkers(results, status) {
-            // if places search was successful
-            if (status === google.maps.places.PlacesServiceStatus.OK) {
-                // create marker for each result and try to match with json data
-                results.forEach(result => {
-                    createMarker(result);
-                    combinePlaceWithJsonData(result);
-                })
+        // creates markers for our custom locations
+        function createJsonLocationMarker(location) {
+            // create position object from location data
+            const position = {
+                lat: parseFloat(location.latitude),
+                lng: parseFloat(location.longitude)
             }
+
+            // create custom icon for marker
+            let icon = document.createElement("img")
+            icon.src = "media/marker-icon.png"
+            icon.style.width = "30px"
+            icon.style.height = "30px"
+
+            // create advanced marker
+            let marker = new google.maps.marker.AdvancedMarkerElement({
+                map: map,
+                content: icon,
+                position: position
+            })
+
+            // add marker to markers array
+            markers.push(marker)
+
+            // build html content for info window
+            let contentString = `<div style="width:250px"><h3>${location.title}</h3>
+                <img src="${location.photo}" style="width:100% max-height:150px object-fit:cover">
+                <p>${location.content}</p>
+            `
+
+            // add place details if available
+            if (location.placeDetails) {
+                contentString += `
+          <div style="font-size:0.9em border-top:1px solid #eee padding-top:8px margin-top:8px">
+            <p><strong>Rating:</strong> ${location.placeDetails.rating}</p>
+            <p><strong>Phone:</strong> ${location.placeDetails.phone}</p>
+            <p><strong>Currently Open:</strong> ${location.placeDetails.isOpen}</p>
+            <p><strong>Website:</strong> <a href="${location.placeDetails.website}" target="_blank">Visit website</a></p>
+          </div>
+        `
+            }
+
+            contentString += `</div>`
+
+            // add click listener to show info window
+            google.maps.event.addListener(marker, "click", () => {
+                infoWindow.setContent(contentString)
+                infoWindow.open(map, marker)
+            })
+
+            // center map on this marker
+            map.setCenter(position)
+            return marker
         }
 
-        function createMarker(place) {
+        function createMarker(place) {// why does bring error in conwole if falling back to google after not finding icon
             // create icon element for marker
             let icon = document.createElement("img")
             // get place type to use custom icon
-            let placeType = place.types[0];
-            let iconPath = `media/${placeType}-icon.png`;
+            let placeType = place.types[0]
+            let iconPath = `media/${placeType}-icon.png`
 
             // try to use custom icon, fallback to google icon
-            icon.src = iconPath;
+            icon.src = iconPath
             icon.onerror = () => {
-                icon.src = place.icon;
-            };
+                icon.src = place.icon
+            }
 
             // set icon size
             icon.style.width = "30px"
@@ -240,12 +378,12 @@
             // loop through all json locations
             for (let i = 0; i < markerContent.length; i++) {
                 // get coordinates from json
-                const jsonLat = parseFloat(markerContent[i].latitude);
-                const jsonLng = parseFloat(markerContent[i].longitude);
+                const jsonLat = parseFloat(markerContent[i].latitude)
+                const jsonLng = parseFloat(markerContent[i].longitude)
                 // get coordinates from google place
-                const placeLatLng = placeResult.geometry.location.toJSON();
+                const placeLatLng = placeResult.geometry.location.toJSON()
                 // calculate distance between points
-                const distance = calculateDistance(jsonLat, jsonLng, placeLatLng.lat, placeLatLng.lng);
+                const distance = calculateDistance(jsonLat, jsonLng, placeLatLng.lat, placeLatLng.lng)
 
                 // if locations are close (within 50 meters)
                 if (distance < 0.05) {
@@ -263,212 +401,376 @@
                                 website: placeDetails.website || 'N/A',
                                 placeId: placeResult.place_id,
                                 types: placeResult.types
-                            };
+                            }
                             // update gallery with new details
-                            displayLocationGallery();
+                            displayLocationGallery()
                         }
-                    });
-                    break;
+                    })
+                    break
                 }
+            }
+        }
+
+        // tries to match places with json
+        function getNearbyServicesMarkers(results, status) {
+            // if places search was successful
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                // create marker for each result and try to match with json data
+                results.forEach(result => {
+                    createMarker(result)
+                    combinePlaceWithJsonData(result)
+                })
             }
         }
 
         // calculates distance between two coordinates in km
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // earth radius in km
+            const R = 6371  // earth radius in km
             // convert degrees to radians
-            const dLat = deg2rad(lat2 - lat1);
-            const dLon = deg2rad(lon2 - lon1);
+            const dLat = deg2rad(lat2 - lat1)
+            const dLon = deg2rad(lon2 - lon1)
             // haversine formula
             const a =
                 Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c;
+                Math.sin(dLon / 2) * Math.sin(dLon / 2)
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+            return R * c
         }
 
         // converts degrees to radians
         function deg2rad(deg) {
-            return deg * (Math.PI / 180);
+            return deg * (Math.PI / 180)
         }
 
-        // creates markers for our custom locations
-        function createJsonLocationMarker(location) {
-            // create position object from location data
-            const position = {
-                lat: parseFloat(location.latitude),
-                lng: parseFloat(location.longitude)
-            };
+        /* tag filtering */
+        function extractTags() {
+            allTags.clear()
+            markerContent.forEach(location => {
+                if (location.tags && Array.isArray(location.tags)) {
+                    location.tags.forEach(tag => allTags.add(tag))
+                }
+            })
+            createTagButtons()
+        }
 
-            // create custom icon for marker
-            let icon = document.createElement("img");
-            icon.src = "media/marker-icon.png";
-            icon.style.width = "30px";
-            icon.style.height = "30px";
+        // tag filter buttons for unique tags
+        // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener esxplain more
+        function createTagButtons() {
+            const regularTagContainer = document.getElementById('fja_tagFilters')
+            const phoneTagContainer = document.getElementById('fja_tagFiltersPhone')
 
-            // create advanced marker
-            let marker = new google.maps.marker.AdvancedMarkerElement({
-                map: map,
-                content: icon,
-                position: position
-            });
+            if (!regularTagContainer || !phoneTagContainer) return
 
-            // add marker to markers array
-            markers.push(marker);
+            regularTagContainer.innerHTML = ''
+            phoneTagContainer.innerHTML = ''
 
-            // build html content for info window
-            let contentString = `
-        <div style="width:250px">
-          <h3>${location.title}</h3>
-          <img src="${location.photo}" style="width:100%;max-height:150px;object-fit:cover">
-          <p>${location.content}</p>
-      `;
+            let sortedTags = []
+            allTags.forEach(function(tag) {
+                sortedTags.push(tag)
+            })
 
-            // add place details if available
-            if (location.placeDetails) {
-                contentString += `
-          <div style="font-size:0.9em;border-top:1px solid #eee;padding-top:8px;margin-top:8px">
-            <p><strong>Rating:</strong> ${location.placeDetails.rating}</p>
-            <p><strong>Phone:</strong> ${location.placeDetails.phone}</p>
-            <p><strong>Currently Open:</strong> ${location.placeDetails.isOpen}</p>
-            <p><strong>Website:</strong> <a href="${location.placeDetails.website}" target="_blank">Visit website</a></p>
-          </div>
-        `;
+            // sort tags alphabetically
+            sortedTags.sort()
+
+            // buttons for both regular and phone
+            for (let i = 0; i < sortedTags.length; i++) {
+                let tag = sortedTags[i]
+
+                // regular tag button
+                const regularButton = document.createElement('button')
+                regularButton.className = 'fja_tagButton'
+                regularButton.textContent = tag
+                regularButton.dataset.tag = tag
+
+                // https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
+                // if tag is  click on , add 'active' class to button
+                if (activeTags.has(tag)) {
+                    regularButton.classList.add('active')
+                }
+
+                // hover effect using event listeners
+                regularButton.addEventListener('mouseenter', function() {
+                    // only if not active
+                    if (!regularButton.classList.contains('active')) {
+                        regularButton.classList.add('hover')
+                    }
+                })
+
+                regularButton.addEventListener('mouseleave', function() {
+                    desktopButton.classList.remove('hover')
+                })
+
+                // https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/toggle
+                // click event for regular button
+                regularButton.addEventListener('click', function() {
+                    regularButton.classList.toggle('active')
+                    regularButton.classList.remove('hover')
+
+                    // looks in regularTagContainer for button with exact tag so that still matches in shrunk version
+                    const phoneButton = phoneTagContainer.querySelector('button[data-tag="' + tag + '"]')
+                    // found , update
+                    if (phoneButton) {
+                        phoneButton.classList.toggle('active')
+                        phoneButton.classList.remove('hover')
+                    }
+
+                    // update tags set
+                    if (activeTags.has(tag)) {
+                        // tag exists-remove (deselecting)
+                        activeTags.delete(tag)
+                    } else {
+                        // tag doesn't exist-add (selecting)
+                        activeTags.add(tag)
+                    }
+
+                    // ipdate display with filters
+                    filterAndDisplayLocations()
+                })
+
+                regularTagContainer.append(regularButton)
+
+                // phone button
+                const phoneButton = document.createElement('button')
+                phoneButton.className = 'fja_tagButton'
+                phoneButton.textContent = tag
+                phoneButton.dataset.tag = tag
+
+                // aet active if tag is clicked
+                if (activeTags.has(tag)) {
+                    phoneButton.classList.add('active')
+                }
+
+                // hover effect
+                phoneButton.addEventListener('mouseenter', function() {
+                    if (!phoneButton.classList.contains('active')) {
+                        phoneButton.classList.add('hover')
+                    }
+                })
+
+                phoneButton.addEventListener('mouseleave', function() {
+                    phoneButton.classList.remove('hover')
+                })
+
+                // handle click event for mobile
+                phoneButton.addEventListener('click', function() {
+                    phoneButton.classList.toggle('active')
+                    phoneButton.classList.remove('hover')
+
+                    // looks in regularTagContainer for button with exact tag
+                    const regularButton = regularTagContainer.querySelector('button[data-tag="' + tag + '"]')
+                    // if found , updates
+                    if (regularButton) {
+                        regularButton.classList.toggle('active')
+                        regularButton.classList.remove('hover')
+                    }
+
+                    // update active tags set
+                    if (activeTags.has(tag)) {
+                        // tag exists-remove (deselecting)
+                        activeTags.delete(tag)
+                    } else {
+                        // tag doesn't exist-add (selecting)
+                        activeTags.add(tag)
+                    }
+
+                    // update display with filters
+                    filterAndDisplayLocations()
+                })
+
+                phoneTagContainer.append(phoneButton)
+            }
+        }
+
+        function handleSearch(event) {
+            // getting search input -> lowercase+remove whitespace
+            searchValue = event.target.value.toLowerCase().trim()
+            filterAndDisplayLocations()
+        }
+
+        function handleSort(event) {
+            sortOption = event.target.value
+            filterAndDisplayLocations()
+        }
+
+        // filter locations based on search and clicked tags
+        function filterAndDisplayLocations() {
+            const galleryContainer = document.getElementById('fja_locationGallery')
+            if (!galleryContainer) return
+
+            galleryContainer.innerHTML = ''
+            let filteredLocations = []
+
+            // checking each location against search and tag
+            for (let i = 0; i < markerContent.length; i++) {
+                let location = markerContent[i]
+
+                let matchesSearch = searchValue === '' ||
+                    location.title.toLowerCase().includes(searchValue) ||
+                    location.content.toLowerCase().includes(searchValue)
+
+                let matchesTags = true
+
+                // if tag selected , check if location has at least one matching tag
+                if (activeTags.size > 0) {
+                    matchesTags = false
+                    if (location.tags && location.tags.length > 0) {
+                        for (let j = 0; j < location.tags.length; j++) {
+                            if (activeTags.has(location.tags[j])) {
+                                matchesTags = true
+                                break
+                            }
+                        }
+                    }
+                }
+
+                // added to filtered locations if matches both search and tags
+                if (matchesSearch && matchesTags) {
+                    filteredLocations.push(location)
+                }
             }
 
-            contentString += `</div>`;
+            filteredLocations = sortLocations(filteredLocations)
 
-            // add click listener to show info window
-            google.maps.event.addListener(marker, "click", () => {
-                infoWindow.setContent(contentString);
-                infoWindow.open(map, marker);
-            });
+            // cards for filtered locations
+            filteredLocations.forEach((location, index) => {
+                const card = document.createElement('div')
+                card.className = 'fja_locationCard'
+                card.dataset.index = index
 
-            // center map on this marker
-            map.setCenter(position);
-            return marker;
-        }
-
-        // displays location cards in gallery below map
-        function displayLocationGallery() {
-            // get gallery container element
-            const galleryContainer = document.getElementById('fja_locationGallery');
-            if (!galleryContainer) return;
-
-            // clear existing gallery content
-            galleryContainer.innerHTML = '';
-
-            // create card for each location
-            markerContent.forEach((location, index) => {
-                const card = document.createElement('div');
-                card.className = 'fja_locationCard';
-                card.dataset.index = index;
-
-                // build place details html if available
-                let placeDetailsHtml = '';
+                // place details html if available
+                let placeDetailsHtml = ''
                 if (location.placeDetails) {
                     placeDetailsHtml = `
-            <div class="fja_placeDetails">
-              Rating: ${location.placeDetails.rating} ⭐<br>
-              ${location.placeDetails.isOpen === true ? '🟢 Open now' :
+                <div class="fja_placeDetails">
+                    Rating: ${location.placeDetails.rating} ⭐<br>
+                    ${location.placeDetails.isOpen === true ? '🟢 Open now' :
                         location.placeDetails.isOpen === false ? '🔴 Closed now' : ''}
-            </div>
-          `;
+                </div>
+            `
                 }
 
-                // set card html content
-                card.innerHTML = `
-          <img src="${location.photo}" alt="${location.title}">
-          <h3>${location.title}</h3>
-          <p>${location.content.substring(0, 100)}${location.content.length > 100 ? '...' : ''}</p>
-          ${placeDetailsHtml}
-        `;
+                // tags on location cards
+                // https://css-tricks.com/connecting-ui-elements-with-visual-cues/
+                let cardTags = ''
+                // if tags exist in array
+                // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
+                if (location.tags && Array.isArray(location.tags)) {
+                    cardTags = '<div class="fja_cardTags">'
+                    location.tags.forEach(tag => {
+                        // tag active marked if clicked in filters
+                        const isActive = activeTags.has(tag) ? 'active' : ''
+                        cardTags += `<span class="fja_tag ${isActive}">${tag}</span>`
+                    })
+                    cardTags += '</div>'
+                }
 
-                // add click handler to center map on this location
+                card.innerHTML = `<img src="${location.photo}" alt="${location.title}"><h3>${location.title}</h3>
+                    <p>${location.content.substring(0, 100)}${location.content.length > 100 ? '...' : ''}</p>
+                    ${cardTags}${placeDetailsHtml}`
+
+                // handle card click
                 card.addEventListener('click', () => {
-                    markers.forEach(marker => marker.map = null);
-                    markers = [];
-                    createJsonLocationMarker(location);
-                });
+                    markers.forEach(marker => marker.map = null)
+                    markers = []
+                    createJsonLocationMarker(location)
+                })
 
-                // add card to gallery
-                galleryContainer.appendChild(card);
-            });
-        }
-
-        function hidePointsOfInterest(map) {
-            // style definition to hide points of interest
-            let styles = [
-                {
-                    "featureType": "poi",
-                    "stylers": [{"visibility": "off"}]
-                }
-            ]
-
-            // create styled map type with poi hidden
-            let styledMapType = new google.maps.StyledMapType(styles, {
-                name: "POI Hidden",
-                alt: "Hide Points of Interest"
+                galleryContainer.append(card)
             })
-            map.mapTypes.set("hide_poi", styledMapType)
 
-            // apply the styled map
-            map.setMapTypeId("hide_poi")
+            // counting for locations
+            const counter = document.getElementById('fja_locationCount')
+            if (counter) {
+                counter.textContent = filteredLocations.length
+            }
         }
 
-        // calculate route with waypoints and travel mode
-        function calculateRoute(travelMode = "DRIVING") {
-            document.getElementById("fja_transportMode").innerHTML = travelMode.toLowerCase();
+        // locations based on picked sort option
+        function sortLocations(locations) {
+            switch (sortOption) {
+                case 'az':
+                    // alphabetically asc
+                    return [...locations].sort((a, b) => a.title.localeCompare(b.title))
+                case 'za':
+                    // alphabetically desc
+                    return [...locations].sort((a, b) => b.title.localeCompare(a.title))
+                case 'distance':
+                    // distance from map center
+                    return [...locations].sort((a, b) => {
+                        const aLat = parseFloat(a.latitude)
+                        const aLng = parseFloat(a.longitude)
+                        const bLat = parseFloat(b.latitude)
+                        const bLng = parseFloat(b.longitude)
 
-            // get waypoints
-            let waypoints = [];
-            let waypointCheckboxes = document.querySelectorAll('input[type="checkbox"][name="waypoint"]');
-            waypointCheckboxes.forEach(waypoint => {
-                if (waypoint.checked) {
-                    waypoints.push({location: waypoint.value});
-                }
-            });
+                        const distA = calculateDistance(
+                            aLat, aLng,
+                            latLng.lat, latLng.lng
+                        )
 
-            let start = document.getElementById("fja_start").value;
-            let end = document.getElementById("fja_end").value;
+                        const distB = calculateDistance(
+                            bLat, bLng,
+                            latLng.lat, latLng.lng
+                        )
 
-            let request = {
-                origin: start,
-                destination: end,
-                waypoints: waypoints,
-                travelMode: google.maps.TravelMode[travelMode],
-                optimizeWaypoints: true
-            };
+                        return distA - distB
+                    })
+                default:
+                    return locations
+            }
+        }
 
-            directionsService.route(request, (route, status) => {
-                if (status === google.maps.DirectionsStatus.OK) {
-                    directionsRenderer.setDirections(route);
-                }
-            });
+        function displayLocationGallery() {
+            filterAndDisplayLocations()
+        }
+
+        // initialize the filters and search
+        function initializeFilters() {
+            // getting the tags from locations
+            extractTags()
+
+            // handling search input
+            const searchInput = document.getElementById('fja_searchInput')
+            if (searchInput) {
+                searchInput.addEventListener('input', handleSearch)
+            }
+            else {
+                console.log("searc ghinput missing - filters disabled")
+            }
+
+            // handling sort by drop
+            const sortSelect = document.getElementById('fja_sortSelect')
+            if (sortSelect) {
+                sortSelect.addEventListener('change', handleSort)
+            }
+            else {
+                console.log("sort by select missing - sorting disabked")
+            }
+
+            filterAndDisplayLocations()
         }
     </script>
 </head>
 
 <body>
 <!-- translation -->
-<div style="margin: 15px 0;">
+<div style="margin: 15px 0">
     <label for="fja_translationText">Text to translate:</label>
     <input id="fja_translationText" onkeyup="document.getElementById('fja_frenchTranslationContainer').style.display = 'none'"
-           style="width: 300px;"
+           style="width: 300px"
            type="text"/>
     <input onclick="translateIntoFrench()" type="button" value="Translate into French"/>
 
-    <div id="fja_frenchTranslationContainer" style="margin-top: 10px; display: none;">
+    <div id="fja_frenchTranslationContainer" style="margin-top: 10px; display: none">
         <label>French Translation: </label>
         <div id="fja_translation"></div>
     </div>
 </div>
 
 <!-- currency converter -->
-<div style="margin: 15px 0;">
+<div style="margin: 15px 0">
     <label for="fja_amount">Amount:</label>
-    <input id="fja_amount" min="0" step="0.01" style="width: 80px;" type="number" value="1">
+    <input id="fja_amount" min="0" step="0.01" style="width: 80px" type="number" value="1">
 
     <label for="fja_fromCurrency">From:</label>
     <select id="fja_fromCurrency">
@@ -488,22 +790,21 @@
 
     <input onclick="convertCurrency()" type="button" value="Convert">&emsp;
 
-    <div id="fja_conversionResult" style="margin-top: 10px; font-weight: bold;"></div>
+    <div id="fja_conversionResult" style="margin-top: 10px; font-weight: bold"></div>
 </div>
 
-<!-- directions control -->
+<!-- directions -->
 <div id="fja_controlPanel">
     <span class="fja_selectLocationLabel">Start:</span>
-    <input type="text" id="fja_start" value="Dundalk Institute of Technology Louth Ireland">
+    <input type="text" id="fja_start" value="Wimbledon Station, London, UK">
 
     <br>
     <span class="fja_selectLocationLabel">End:</span>
-    <input type="text" id="fja_end" value="Maynooth University Ireland">
+    <input type="text" id="fja_end" value="All England Lawn Tennis Club, London, UK">
 
     <h2 class="fja_waypointLocationLabel">via</h2>
-    <label><input type="checkbox" name="waypoint" value="Sligo Ireland" onclick="calculateRoute(document.getElementById('fja_transportMode').innerHTML.toUpperCase())">Sligo</label><br>
-    <label><input type="checkbox" name="waypoint" value="Galway Ireland" onclick="calculateRoute(document.getElementById('fja_transportMode').innerHTML.toUpperCase())">Galway</label><br>
-    <label><input type="checkbox" name="waypoint" value="Cork Ireland" onclick="calculateRoute(document.getElementById('fja_transportMode').innerHTML.toUpperCase())">Cork</label><br>
+    <div id="fja_waypoints">
+    </div>
 </div>
 
 <div class="fja_transportModeButtons">
@@ -518,20 +819,44 @@
 
 <div id="fja_map"></div>
 
-<!-- Place type filters -->
+<!-- place type filters --> <!-- add more ? -->
 <div>
     <label for="cafe">Cafe:</label><input checked id="cafe" name="placeType" onclick="displayMap()" type="checkbox" value="cafe">
-
     <label for="school">School:</label><input id="school" name="placeType" onclick="displayMap()" type="checkbox" value="school">
-
     <label for="university">Uni:</label><input id="university" name="placeType" onclick="displayMap()" type="checkbox" value="university">
-
     <label for="atm">ATM:</label><input id="atm" name="placeType" onclick="displayMap()" type="checkbox" value="atm">
 </div>
 
 <p>Show selected place types within 1km of where the map is clicked and also zoom onto the point that was clicked on the
     map.</p>
 <p>If you click on a marker, it will show the name of the place. It will not show any other details.</p>
+
+<!-- filters -->
+<div class="fja_filterContainer">
+    <div class="fja_searchSortRow">
+        <input type="text" id="fja_searchInput" class="fja_searchInput" placeholder="Search locations...">
+
+        <select id="fja_sortSelect" class="fja_sortSelect">
+            <option value="default">Default</option>
+            <option value="az">Name (A-Z)</option>
+            <option value="za">Name (Z-A)</option>
+            <option value="distance">Distance (nearest to centre)</option>
+        </select>
+    </div>
+
+    <div class="fja_tagFilters" id="fja_tagFilters">
+    </div>
+
+    <details class="fja_tagFiltersPhone">
+        <summary>Filter by Tags</summary>
+        <div class="fja_tagFiltersPhoneContent" id="fja_tagFiltersPhone">
+        </div>
+    </details>
+
+    <div class="fja_locationCountContainer">
+        Showing <span id="fja_locationCount">0</span> locations
+    </div>
+</div>
 
 <!-- locations gallery section -->
 <h2>Saved Locations</h2>

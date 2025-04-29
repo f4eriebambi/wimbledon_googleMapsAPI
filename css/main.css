@@ -1,3 +1,4 @@
+@charset "UTF-8";
 #fja_map {
   width: 650px;
   height: 650px;
@@ -5,54 +6,7 @@
   margin-bottom: 20px;
 }
 
-.fja_locationGallery {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.fja_locationCard {
-  width: 200px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.fja_locationCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.fja_locationCard img {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 3px;
-}
-
-.fja_locationCard h3 {
-  margin: 10px 0 5px;
-}
-
-.fja_locationCard p {
-  font-size: 0.9em;
-  color: #666;
-  margin: 5px 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.fja_placeDetails {
-  margin-top: 5px;
-  font-size: 0.85em;
-  color: #0066cc;
-}
-
+/* translation+ currency */
 #fja_translationText {
   padding: 5px;
   margin-right: 10px;
@@ -83,6 +37,7 @@
   margin-bottom: -5px;
 }
 
+/* directions panel */
 #fja_controlPanel {
   background-color: #fff;
   margin-bottom: 20px;
@@ -102,11 +57,33 @@
   margin-bottom: 5px;
 }
 
-#fja_directions {
-  width: 100%;
-  margin: 0px;
-  margin-top: 20px;
-  margin-bottom: 50px;
+/* waypoints */
+#fja_waypoints {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 5px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+.fja_waypointLabel {
+  display: inline-block;
+  margin: 3px 0;
+  padding: 3px 8px;
+  background-color: #f9f9f9;
+  border-radius: 15px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.fja_waypointLabel:hover {
+  background-color: #f0f0f0;
+}
+
+.fja_waypointLabel input {
+  margin-right: 5px;
 }
 
 .fja_transportModeButtons {
@@ -121,4 +98,309 @@
 
 #fja_transportMode {
   margin: 10px 0;
+}
+
+#fja_directions {
+  width: 100%;
+  margin: 0px;
+  margin-top: 20px;
+  margin-bottom: 50px;
+}
+
+/* filters container https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox */
+.fja_filterContainer {
+  width: 100%;
+  max-width: 100%;
+  margin: 20px auto;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+/* search bar and sort section */
+.fja_searchSortRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+/* search input */
+.fja_searchInput {
+  flex: 1;
+  min-width: 200px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* sort drop */
+.fja_sortSelect {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 14px;
+  min-width: 150px;
+}
+
+/* tags filter styles https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_transitions/Using_CSS_transitions */
+.fja_tagFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+/* tag buttons */
+.fja_tagButton {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin: 4px;
+}
+
+.fja_tagButton:hover, .fja_tagButton.hover {
+  background-color: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.fja_tagButton.active {
+  background-color: #3498db;
+  color: white;
+  border-color: #2980b9;
+}
+
+.fja_tagButton.active:hover {
+  background-color: #2980b9;
+}
+
+/* phone tag filters https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details */
+.fja_tagFiltersPhone {
+  display: none;
+  margin: 10px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.fja_tagFiltersPhone summary {
+  padding: 12px 15px;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.fja_tagFiltersPhone summary::after {
+  content: "▼";
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.3s ease;
+}
+
+.fja_tagFiltersPhone[open] summary::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.fja_tagFiltersPhone summary:hover {
+  background-color: #e0e0e0;
+}
+
+.fja_tagFiltersPhoneContent {
+  padding: 15px;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* locaiton count */
+.fja_locationCountContainer {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+/* gallery https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout */
+.fja_locationGallery {
+  width: 100%;
+  max-width: 100%;
+  margin: 20px auto;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  box-sizing: border-box;
+}
+
+/* cards */
+.fja_locationCard {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.fja_locationCard:hover {
+  transform: translateY(-4px);
+}
+
+.fja_locationCard img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.fja_locationCard h3 {
+  margin: 12px 15px 8px;
+  font-size: 18px;
+}
+
+.fja_locationCard p {
+  margin: 0 15px 12px;
+  color: #666;
+  font-size: 14px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* tags in loc card */
+.fja_cardTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 8px 15px;
+}
+
+.fja_tag {
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: #666;
+}
+
+/* tag active */
+.fja_tag.active {
+  background-color: #3498db;
+  color: white;
+  position: relative;
+  animation: pulse 1s ease-in-out;
+}
+
+/* tag active pulse https://www.w3schools.com/cssref/atrule_keyframes.php */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.fja_placeDetails {
+  margin: 0 15px 12px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+  font-size: 13px;
+  color: #555;
+}
+
+/* responsiveness https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries */
+@media (max-width: 650px) {
+  /* map responsive */
+  #fja_map {
+    width: 100%;
+    height: 400px;
+  }
+  /* stack search and filters */
+  .fja_searchSortRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .fja_searchInput, .fja_sortSelect {
+    width: 100%;
+  }
+  /* hiding regular tags and show phone tags */
+  .fja_tagFilters {
+    display: none;
+  }
+  .fja_tagFiltersPhone {
+    display: block;
+  }
+  /* waypoints responsiveness */
+  #fja_waypoints {
+    max-height: 150px;
+  }
+  .fja_waypointLabel {
+    display: block;
+    margin: 5px 0;
+  }
+  /* location gallery responsiveness */
+  .fja_locationGallery {
+    grid-template-columns: 1fr;
+  }
+  /* tag buttons for phone */
+  .fja_tagButton {
+    padding: 8px 10px;
+    font-size: 12px;
+    flex-grow: 1;
+  }
+}
+@media (min-width: 651px) and (max-width: 1000px) {
+  /* tablet screen */
+  #fja_map {
+    width: 100%;
+    max-width: 100%;
+  }
+  .fja_locationGallery, .fja_filterContainer {
+    width: 100%;
+    max-width: 100%;
+  }
+  .fja_locationGallery {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+@media (min-width: 1001px) {
+  /* laptop screen */
+  #fja_map {
+    width: 100%;
+    max-width: 100%;
+    height: 650px;
+  }
+  .fja_filterContainer {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px;
+  }
+  .fja_locationGallery {
+    width: 100%;
+    max-width: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+  /* Optional: add a max-width to prevent excessive stretching on ultra-wide screens */
+  body {
+    max-width: 1800px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
 }
