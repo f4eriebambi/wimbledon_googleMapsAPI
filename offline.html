@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>˚ ༘ ೀ⋆｡˚ ChallengersRoutes | Offline</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="icons/icon_small.png" type="image/png">
+    <link rel="apple-touch-icon" href="icons/icon_medium.png">
+    <meta name="msapplication-TileImage" content="icons/icon_large.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/main.css" rel="stylesheet">
+    <meta name="theme-color" content="#ffffff">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class=" fja_offlineContainer">
+    <div class=" fja_offlineIcon">📶</div>
+    <h1>Offline Mode</h1>
+    <p>ChallengersRoutes can't connect right now. But don't worry!</p>
+
+    <div class="fja_challengersFooter">
+        <p>Try these steps:</p>
+        <ul style="text-align: left; display: inline-block;">
+            <li>Check your internet connection</li>
+            <li>Reload the page</li>
+<!--            <li>Use basic map features (cached locations may still work)</li>-->
+        </ul>
+
+        <button class=" fja_reloadButton" onclick="window.location.reload()">
+            Reload
+        </button>
+
+        <p><br>˚ ༘🎾 ೀ⋆🎾｡˚˚ ༘🎾 ೀ⋆🎾｡˚</p>
+        <p>© 2025 ChallengersRoutes</p>
+    </div>
+</div>
+
+<!-- offline logic -->
+<script>
+    // update ui when back online
+    setInterval(() => {
+        const reloadButton = document.querySelector('.fja_reloadButton');
+        if(navigator.onLine) {
+            reloadButton.textContent = 'You are back online! Click to reload';
+            reloadButton.style.backgroundColor = '#4CAF50';
+        }
+        else {
+            reloadButton.textContent = 'Reload';
+            reloadButton.style.backgroundColor = '';
+        }
+    }, 5000);
+</script>
+</body>
+</html>

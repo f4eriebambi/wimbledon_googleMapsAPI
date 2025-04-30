@@ -1,337 +1,808 @@
-//* {
-//  background-color: red;
-//}
+$primary-green: #a4c3a2;
+$secondary-purple: #5d5179;
+$accent-green: #ecead0;
+$cream: #f5f5ef;
+$white: #ffffff;
+$black: #333333;
+$light-grey: rgba(152, 152, 152, 0.28);
+$medium-grey: #cccccc;
+$dark-grey: #555555;
+$primary-font: 'Montserrat', 'Arial', sans-serif;
+$secondary-font: 'Georgia', serif;
 
-#fja_map {
-  width: 650px;
-  height: 650px;
-  border: thin solid #ccc;
-  margin-bottom: 20px;
+body {
+  font-family: $primary-font;
+  background-color: $cream;
+  color: $black;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  max-width: 1800px;
+  margin: 0 auto;
 }
 
-/* translation+ currency */
-#fja_translationText {
-  padding: 5px;
-  margin-right: 10px;
-}
-
-#fja_frenchTranslationContainer {
-  padding: 10px;
-  background: #f0f0f0;
-  border-radius: 5px;
-}
-
-#fja_translation {
-  padding: 5px;
-  font-weight: bold;
-}
-
-#fja_amount, #fja_fromCurrency, #fja_toCurrency {
-  padding: 5px;
-  margin-right: 10px;
-}
-
-#fja_conversionResult {
-  padding: 10px;
-  background: #f0f0f0;
-  border-radius: 5px;
-  display: inline-block;
-  min-width: 100px;
-  margin-bottom: -5px;
-}
-
-/* directions panel */
-#fja_controlPanel {
-  background-color: #fff;
-  margin-bottom: 20px;
-  padding: 15px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.fja_selectLocationLabel {
-  font-weight: bold;
-  min-width: 40px;
-  display: inline-block;
-}
-
-.fja_waypointLocationLabel {
-  clear: both;
-  margin-bottom: 5px;
-}
-
-/* waypoints */
-#fja_waypoints {
-  max-height: 200px;
-  overflow-y: auto;
-  padding: 5px;
-  border: 1px solid #eee;
-  border-radius: 5px;
-  margin-top: 5px;
-}
-
-.fja_waypointLabel {
-  display: inline-block;
-  margin: 3px 0;
-  padding: 3px 8px;
-  background-color: #f9f9f9;
-  border-radius: 15px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.fja_waypointLabel:hover {
-  background-color: #f0f0f0;
-}
-
-.fja_waypointLabel input {
-  margin-right: 5px;
-}
-
-.fja_transportModeButtons {
-  margin: 10px 0;
-}
-
-.fja_transportModeButtons button {
-  margin-right: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-#fja_transportMode {
-  margin: 10px 0;
-}
-
-#fja_directions {
+.fja_challengersContainer {
+  padding: 0 10px;
   width: 100%;
-  margin: 0px;
-  margin-top: 20px;
-  margin-bottom: 50px;
-}
-
-/* filters container https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox */
-.fja_filterContainer {
-  width: 100%;
-  max-width: 100%;
-  margin: 20px auto;
-  padding: 15px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  max-width: 1600px;
+  margin: 0 auto;
   box-sizing: border-box;
 }
 
-/* search bar and sort section */
-.fja_searchSortRow {
+.fja_challengersHeader {
+  background-color: $primary-green;
+  color: $white;
+  padding: 40px 20px;
+  margin-bottom: 30px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+  h1 {
+    font-size: 42px;
+    font-weight: 700;
+    margin: 0 0 15px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  p {
+    font-size: 16px;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .fja_tagline {
+    font-style: italic;
+    font-weight: 600;
+    margin-top: 15px;
+    font-size: 18px;
+    color: $accent-green;
+  }
+}
+
+// tab system
+.fja_tabs {
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+  background-color: $white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.fja_tablink {
+  flex: 1;
+  min-width: 120px;
+  background-color: inherit;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 16px;
+  font-weight: 600;
+  color: $dark-grey;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-right: 0.5rem;
+}
+
+.fja_tablink:hover {
+  background-color: $light-grey;
+}
+
+.fja_tablink.active {
+  background-color: $primary-green;
+  color: $white;
+}
+
+.fja_tablink i {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+// tab content
+.fja_tabcontent {
+  display: none;
+  padding: 20px;
+  border-radius: 0 0 8px 8px;
+  background-color: $white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  animation: fja_fadeEffect 0.5s;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  &.active {
+    display: block;
+  }
+
+  h2 {
+    color: $primary-green;
+    margin-top: 0;
+    font-size: 24px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid $light-grey;
+    margin-bottom: 20px;
+  }
+}
+
+@keyframes fja_fadeEffect {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+// MAP TAB CONTENT
+// map element
+#fja_map {
+  width: 100%;
+  height: 550px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+#fja_mapTab {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+// place type filters
+.fja_placeTypeFilters {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 15px;
-  align-items: center;
+  margin-bottom: 20px;
+  justify-content: space-evenly;
+
+  label {
+    display: flex;
+    align-items: center;
+    padding: 8px 15px;
+    background-color: $white;
+    border: 2px solid $light-grey;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+
+    &:hover {
+      border-color: $primary-green;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+
+      &:checked + span {
+        color: $primary-green;
+        font-weight: 600;
+      }
+    }
+  }
 }
 
-/* search input */
+// filters container https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox
+.fja_filterContainer {
+  background-color: $white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin: 30px 0;
+  position: relative;
+  border-top: 4px solid $secondary-purple;
+  max-width: 100%;
+}
+
+// search bar and sort section
+.fja_searchSortRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  align-items: center;
+  max-width: 100%;
+  width: 95%;
+}
+
+// search input
 .fja_searchInput {
   flex: 1;
-  min-width: 200px;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: 12px 15px;
+  border: 2px solid $medium-grey;
+  border-radius: 30px;
+  font-size: 15px;
+  min-width: 250px;
+
+  &:focus {
+    border-color: $primary-green;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
+  }
 }
 
-/* sort drop */
+// sort dropdown
 .fja_sortSelect {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  font-size: 14px;
-  min-width: 150px;
+  padding: 10px 15px;
+  border: 2px solid $medium-grey;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: $white;
+  min-width: 180px;
+
+  &:focus {
+    border-color: $primary-green;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
+  }
 }
 
-/* tags filter styles https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_transitions/Using_CSS_transitions */
+// tags https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_transitions/Using_CSS_transitions
 .fja_tagFilters {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 15px;
+  margin: 20px 0;
 }
 
-/* tag buttons */
+// tag buttons
 .fja_tagButton {
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
+  background-color: $light-grey;
+  border: none;
   border-radius: 20px;
-  padding: 6px 12px;
-  font-size: 13px;
+  padding: 8px 15px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+  &:hover {
+    background-color: #e0e0e0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  }
+
+  &.active {
+    background-color: $secondary-purple;
+    color: white;
+
+    &:hover {
+      background-color: darken($secondary-purple, 10%);
+    }
+  }
 }
 
-.fja_tagButton:hover, .fja_tagButton.hover {
-  background-color: #e0e0e0;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.fja_tagButton.active {
-  background-color: #3498db;
-  color: white;
-  border-color: #2980b9;
-}
-
-.fja_tagButton.active:hover {
-  background-color: #2980b9;
-}
-
-/* phone tag filters https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details */
 .fja_tagFiltersPhone {
   display: none;
-  margin: 10px 0;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin: 15px 0;
+
+  summary {
+    padding: 12px 15px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .fja_tagFiltersPhoneContent {
+    padding: 15px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
 }
 
-.fja_tagFiltersPhone summary {
-  padding: 12px 15px;
-  background-color: #f0f0f0;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s ease;
-  position: relative;
-}
-
-.fja_tagFiltersPhone summary::after {
-  content: "▼";
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: transform 0.3s ease;
-}
-
-.fja_tagFiltersPhone[open] summary::after {
-  transform: translateY(-50%) rotate(180deg);
-}
-
-.fja_tagFiltersPhone summary:hover {
-  background-color: #e0e0e0;
-}
-
-.fja_tagFiltersPhoneContent {
-  padding: 15px;
-  background-color: #f9f9f9;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-/* locaiton count */
+// location count
 .fja_locationCountContainer {
+  display: inline-block;
+  background-color: $secondary-purple;
+  color: $white;
+  padding: 5px 15px;
+  border-radius: 30px;
   font-size: 14px;
-  color: #666;
-  margin-bottom: 10px;
-  font-style: italic;
+  margin: 15px 0;
 }
 
-/* gallery https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout */
+// location gallery https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout
 .fja_locationGallery {
-  width: 100%;
-  max-width: 100%;
-  margin: 20px auto;
   display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  box-sizing: border-box;
+  gap: 25px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  margin: 30px 0;
 }
 
-/* cards */
+// location cards
 .fja_locationCard {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background-color: $white;
+  border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.2s ease;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
   cursor: pointer;
+  border-top: 4px solid transparent;
+  padding: 15px !important;
+  margin: 10px !important;
+
+  &:hover {
+    // https://www.w3schools.com/cssref/func_translatey.php#:~:text=Definition%20and%20Usage,used%20within%20the%20transform%20property.
+    transform: translateY(-8px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+    border-top-color: $primary-green;
+  }
+
+  img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+  h3 {
+    margin: 15px 20px 10px;
+    color: $primary-green;
+    font-size: 18px;
+  }
+
+  p {
+    margin: 0 20px 15px;
+    color: $dark-grey;
+    font-size: 14px;
+    line-height: 1.5;
+  }
 }
 
-.fja_locationCard:hover {
-  transform: translateY(-4px);
-}
-
-.fja_locationCard img {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-}
-
-.fja_locationCard h3 {
-  margin: 12px 15px 8px;
-  font-size: 18px;
-}
-
-.fja_locationCard p {
-  margin: 0 15px 12px;
-  color: #666;
-  font-size: 14px;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* tags in loc card */
+// tags in location card
 .fja_cardTags {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  margin: 8px 15px;
+  gap: 6px;
+  margin: 15px 0;
+  margin-left: 5px !important;
+  padding-left: 5px !important;
 }
 
 .fja_tag {
   background-color: #f0f0f0;
-  border-radius: 12px;
-  padding: 3px 8px;
-  font-size: 11px;
-  color: #666;
-}
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 12px;
 
-/* tag active */
-.fja_tag.active {
-  background-color: #3498db;
-  color: white;
-  position: relative;
-  animation: pulse 1s ease-in-out;
-}
-
-/* tag active pulse https://www.w3schools.com/cssref/atrule_keyframes.php */
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  &.active {
+    background-color: $secondary-purple;
+    color: white;
+  }
 }
 
 .fja_placeDetails {
-  margin: 0 15px 12px;
-  padding-top: 8px;
-  border-top: 1px solid #eee;
+  margin: 0 20px 15px;
+  padding-top: 10px;
+  border-top: 1px solid $light-grey;
   font-size: 13px;
-  color: #555;
+  color: $dark-grey;
+  line-height: 1.5;
 }
 
-/* responsiveness https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries */
+// DIRECTIONS TAB CONTENT
+// directions panel
+#fja_controlPanel {
+  background-color: $white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  border-top: 4px solid $primary-green;
+}
+
+.fja_selectLocationLabel {
+  font-weight: 600;
+  min-width: 60px;
+  display: inline-block;
+  color: $primary-green;
+  margin-bottom: 5px;
+}
+
+.fja_waypointLocationLabel {
+  margin: 15px 0 10px;
+  color: $primary-green;
+  font-size: 18px;
+  position: relative;
+
+  &:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 40px;
+    height: 3px;
+    background-color: $accent-green;
+  }
+}
+
+.fja_directionsControlButtons {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.fja_getRouteButton {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 15px;
+  background-color: $primary-green;
+  color: $white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: darken($primary-green, 10%);
+  }
+}
+
+// waypoints
+#fja_waypoints {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid $light-grey;
+  border-radius: 8px;
+  margin-top: 10px;
+  background-color: $light-grey;
+}
+
+.fja_waypointLabel {
+  display: inline-block;
+  margin: 4px;
+  padding: 6px 12px;
+  background-color: $white;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: $light-grey;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  input {
+    margin-right: 6px;
+  }
+}
+
+// transport mode buttons
+.fja_transportModeButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    background-color: $white;
+    border: 2px solid $primary-green;
+    border-radius: 30px;
+    color: $primary-green;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: $primary-green;
+      color: $white;
+      transform: translateY(-2px);
+    }
+
+    &.active {
+      background-color: $primary-green;
+      color: $white;
+    }
+
+    i {
+      margin-right: 8px;
+    }
+  }
+}
+
+#fja_transportMode {
+  display: inline-block;
+  background-color: $primary-green;
+  color: $white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 16px;
+  text-transform: uppercase;
+  margin: 10px 0;
+  letter-spacing: 1px;
+}
+
+#fja_directions {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border: 1px solid $medium-grey;
+  max-height: 500px;
+  overflow-y: auto;
+
+  summary {
+    padding: 10px 15px;
+    background-color: $light-grey;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    color: $primary-green;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: darken($light-grey, 5%);
+    }
+  }
+}
+
+// CURRENCY TAB CONTENT
+// currency converter
+.fja_currencyConverter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+
+  label {
+    font-weight: 600;
+    color: $primary-green;
+    margin-right: 5px;
+  }
+
+  #fja_amount {
+    width: 100px;
+    padding: 10px 15px;
+    border: 2px solid $medium-grey;
+    border-radius: 8px;
+    font-size: 15px;
+
+    &:focus {
+      border-color: $primary-green;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
+    }
+  }
+
+  select {
+    padding: 10px 15px;
+    border: 2px solid $medium-grey;
+    border-radius: 8px;
+    font-size: 15px;
+    background-color: $white;
+
+    &:focus {
+      border-color: $primary-green;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
+    }
+  }
+
+  input[type="button"] {
+    padding: 10px 20px;
+    background-color: $primary-green;
+    color: $white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: darken($primary-green, 5%);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+#fja_conversionResult {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: $light-grey;
+  border-radius: 8px;
+  border-left: 4px solid $secondary-purple;
+  display: inline-block;
+  font-weight: 600;
+  color: $primary-green;
+  min-width: 200px;
+}
+
+// TRANSLATION TAB CONTENT
+// translation tool
+.fja_translationTool {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  label {
+    font-weight: 600;
+    color: $primary-green;
+  }
+
+  #fja_translationText {
+    flex: 1;
+    min-width: 250px;
+    padding: 10px 15px;
+    border: 2px solid $medium-grey;
+    border-radius: 8px;
+    font-size: 15px;
+
+    &:focus {
+      border-color: $primary-green;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
+    }
+  }
+
+  input[type="button"] {
+    padding: 10px 20px;
+    background-color: $primary-green;
+    color: $white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: darken($primary-green, 5%);
+      transform: translateY(-2px);
+    }
+  }
+}
+
+#fja_frenchTranslationContainer {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: $light-grey;
+  border-radius: 8px;
+  border-left: 4px solid $secondary-purple;
+
+  label {
+    font-weight: 600;
+    color: $primary-green;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  #fja_translation {
+    padding: 10px;
+    background-color: $white;
+    border-radius: 5px;
+    border-left: 3px solid $secondary-purple;
+  }
+
+  .fja_translationButtons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  #fja_englishTranslationContainer {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: rgba(152, 152, 152, 0.28);
+    border-radius: 8px;
+    border-left: 4px solid #5d5179;
+  }
+
+  #fja_englishTranslationContainer label {
+    font-weight: 600;
+    color: #a4c3a2;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  #fja_englishTranslation {
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    border-left: 3px solid #5d5179;
+  }
+}
+
+// FOOTER
+// footer
+.fja_challengersFooter {
+  background-color: $primary-green;
+  color: $white;
+  padding: 40px 20px;
+  margin-top: 50px;
+  text-align: center;
+
+  p {
+    max-width: 600px;
+    margin: 0 auto 20px;
+    opacity: 0.9;
+  }
+
+  .fja_footerLinks {
+    margin-top: 20px;
+
+    a {
+      color: $white;
+      margin: 0 15px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      font-weight: 600;
+
+      &:hover {
+        color: $accent-green;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// form styling
+input[type="text"],
+input[type="number"],
+select {
+  padding: 10px 15px;
+  border: 2px solid $medium-grey;
+  border-radius: 8px;
+  font-family: $primary-font;
+  font-size: 15px;
+  transition: all 0.2s ease;
+
+  &:focus {
+    border-color: $primary-green;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
+  }
+}
+
+button, input[type="button"] {
+  background-color: $primary-green;
+  color: $white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-family: $primary-font;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: darken($primary-green, 5%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// RESPONSIVENESS
+// https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
 @media (max-width: 650px) {
-  /* map responsive */
+  // map responsive
   #fja_map {
     width: 100%;
     height: 400px;
   }
 
-  /* stack search and filters */
+  // stack search and filters
   .fja_searchSortRow {
     flex-direction: column;
     align-items: stretch;
@@ -341,16 +812,7 @@
     width: 100%;
   }
 
-  /* hiding regular tags and show phone tags */
-  .fja_tagFilters {
-    display: none;
-  }
-
-  .fja_tagFiltersPhone {
-    display: block;
-  }
-
-  /* waypoints responsiveness */
+  // waypoints responsiveness
   #fja_waypoints {
     max-height: 150px;
   }
@@ -360,28 +822,158 @@
     margin: 5px 0;
   }
 
-  /* location gallery responsiveness */
-  .fja_locationGallery {
-    grid-template-columns: 1fr;
-  }
-
-  /* tag buttons for phone */
+  // tag buttons for phone
   .fja_tagButton {
     padding: 8px 10px;
     font-size: 12px;
     flex-grow: 1;
   }
+
+  .fja_directionsControlButtons {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .fja_challengersHeader {
+    width: 100%;
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;
+
+    h1 {
+      width: 100%;
+      box-sizing: border-box;
+      word-wrap: break-word;
+    }
+  }
+
+  .fja_challengersContainer {
+    padding: 0 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .fja_tabs button {
+    padding: 12px 8px;
+    font-size: 14px;
+    flex-basis: 50%;
+  }
+
+  .fja_transportModeButtons {
+    flex-direction: column;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .fja_searchSortRow {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    margin-bottom: 15px;
+
+    // https://www.w3schools.com/cssref/sel_last-child.php
+    // makes sure each child element is properly aligned
+    > * {
+      width: 100%;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    > *:last-child {
+      margin-bottom: 0;
+    }
+
+    .fja_searchInput {
+      width: 100%;
+      box-sizing: border-box;
+      margin-right: 0;
+    }
+
+    .fja_sortSelect {
+      width: 100%;
+      box-sizing: border-box;
+    }
+  }
+
+  .fja_filterContainer {
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .fja_locationGallery {
+    grid-template-columns: 1fr;
+  }
+
+  // hiding regular tags and show phone tags
+  .fja_tagFilters {
+    display: none;
+  }
+
+  .fja_tagFiltersPhone {
+    display: block;
+  }
+
+  .fja_currencyConverter {
+    flex-direction: column;
+    align-items: flex-start;
+
+    #fja_amount, select {
+      width: 100%;
+    }
+
+    input[type="button"] {
+      align-self: flex-end;
+    }
+  }
+
+  .fja_translationTool {
+    width: 100%;
+    box-sizing: border-box;
+
+    #fja_translationText {
+      width: 100%;
+      box-sizing: border-box;
+      min-width: unset;
+    }
+
+    input[type="button"] {
+      width: 100%;
+      margin-top: 10px;
+      align-self: center;
+    }
+  }
+
+  #fja_frenchTranslationContainer {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .fja_translationButtons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .fja_translationButtons input[type="button"] {
+    width: 100%;
+  }
 }
 
 @media (min-width: 651px) and (max-width: 1000px) {
-  /* tablet screen */
+  // tablet screen
   #fja_map {
     width: 100%;
     max-width: 100%;
   }
 
   .fja_locationGallery, .fja_filterContainer {
-    width: 100%;
     max-width: 100%;
   }
 
@@ -390,8 +982,22 @@
   }
 }
 
+@media (min-width: 769px) and (max-width: 1024px) {
+  .fja_challengersContainer {
+    padding: 0 15px;
+  }
+
+  #fja_map {
+    height: 500px;
+  }
+
+  .fja_locationGallery {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
 @media (min-width: 1001px) {
-  /* laptop screen */
+  // laptop screen
   #fja_map {
     width: 100%;
     max-width: 100%;
@@ -399,7 +1005,6 @@
   }
 
   .fja_filterContainer {
-    width: 100%;
     max-width: 100%;
     padding: 20px;
   }
@@ -409,11 +1014,120 @@
     max-width: 100%;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
+}
 
-  /* Optional: add a max-width to prevent excessive stretching on ultra-wide screens */
-  body {
-    max-width: 1800px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
+// offline.html
+.fja_offlineContainer {
+  text-align: center;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.fja_offlineIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.fja_reloadButton {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 1rem;
+}
+
+// countdown modal
+.fja_countdownModal {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+  transition: all 0.3s ease;
+}
+
+.fja_countdownContent {
+  background-color: #a4c3a2;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  text-align: center;
+  color: white;
+}
+
+#fja_countdownTimer {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #5d5179;
+  border-radius: 8px;
+  color: #ecead0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.fja_countdownButtons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.fja_countdownButtons button {
+  padding: 8px 16px;
+  background-color: #5d5179;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.fja_countdownButtons button:hover {
+  background-color: #4d4169;
+}
+
+/* mini countdown */
+.fja_miniCountdown {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 8px 15px;
+  background-color: #a4c3a2;
+  border-radius: 30px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 100;
+}
+
+#fja_expandCountdown {
+  background-color: #5d5179;
+  color: white;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
 }

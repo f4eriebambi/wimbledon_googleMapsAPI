@@ -1,338 +1,713 @@
-@charset "UTF-8";
-#fja_map {
-  width: 650px;
-  height: 650px;
-  border: thin solid #ccc;
-  margin-bottom: 20px;
+body {
+  font-family: "Montserrat", "Arial", sans-serif;
+  background-color: #f5f5ef;
+  color: #333333;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  max-width: 1800px;
+  margin: 0 auto;
 }
 
-/* translation+ currency */
-#fja_translationText {
-  padding: 5px;
-  margin-right: 10px;
-}
-
-#fja_frenchTranslationContainer {
-  padding: 10px;
-  background: #f0f0f0;
-  border-radius: 5px;
-}
-
-#fja_translation {
-  padding: 5px;
-  font-weight: bold;
-}
-
-#fja_amount, #fja_fromCurrency, #fja_toCurrency {
-  padding: 5px;
-  margin-right: 10px;
-}
-
-#fja_conversionResult {
-  padding: 10px;
-  background: #f0f0f0;
-  border-radius: 5px;
-  display: inline-block;
-  min-width: 100px;
-  margin-bottom: -5px;
-}
-
-/* directions panel */
-#fja_controlPanel {
-  background-color: #fff;
-  margin-bottom: 20px;
-  padding: 15px;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.fja_selectLocationLabel {
-  font-weight: bold;
-  min-width: 40px;
-  display: inline-block;
-}
-
-.fja_waypointLocationLabel {
-  clear: both;
-  margin-bottom: 5px;
-}
-
-/* waypoints */
-#fja_waypoints {
-  max-height: 200px;
-  overflow-y: auto;
-  padding: 5px;
-  border: 1px solid #eee;
-  border-radius: 5px;
-  margin-top: 5px;
-}
-
-.fja_waypointLabel {
-  display: inline-block;
-  margin: 3px 0;
-  padding: 3px 8px;
-  background-color: #f9f9f9;
-  border-radius: 15px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.fja_waypointLabel:hover {
-  background-color: #f0f0f0;
-}
-
-.fja_waypointLabel input {
-  margin-right: 5px;
-}
-
-.fja_transportModeButtons {
-  margin: 10px 0;
-}
-
-.fja_transportModeButtons button {
-  margin-right: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-#fja_transportMode {
-  margin: 10px 0;
-}
-
-#fja_directions {
+.fja_challengersContainer {
+  padding: 0 10px;
   width: 100%;
-  margin: 0px;
-  margin-top: 20px;
-  margin-bottom: 50px;
-}
-
-/* filters container https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Basic_concepts_of_flexbox */
-.fja_filterContainer {
-  width: 100%;
-  max-width: 100%;
-  margin: 20px auto;
-  padding: 15px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 1600px;
+  margin: 0 auto;
   box-sizing: border-box;
 }
 
-/* search bar and sort section */
-.fja_searchSortRow {
+.fja_challengersHeader {
+  background-color: #a4c3a2;
+  color: #ffffff;
+  padding: 40px 20px;
+  margin-bottom: 30px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.fja_challengersHeader h1 {
+  font-size: 42px;
+  font-weight: 700;
+  margin: 0 0 15px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.fja_challengersHeader p {
+  font-size: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+.fja_challengersHeader .fja_tagline {
+  font-style: italic;
+  font-weight: 600;
+  margin-top: 15px;
+  font-size: 18px;
+  color: #ecead0;
+}
+
+.fja_tabs {
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.fja_tablink {
+  flex: 1;
+  min-width: 120px;
+  background-color: inherit;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 16px;
+  font-weight: 600;
+  color: #555555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-right: 0.5rem;
+}
+
+.fja_tablink:hover {
+  background-color: rgba(152, 152, 152, 0.28);
+}
+
+.fja_tablink.active {
+  background-color: #a4c3a2;
+  color: #ffffff;
+}
+
+.fja_tablink i {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+.fja_tabcontent {
+  display: none;
+  padding: 20px;
+  border-radius: 0 0 8px 8px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  animation: fja_fadeEffect 0.5s;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.fja_tabcontent.active {
+  display: block;
+}
+.fja_tabcontent h2 {
+  color: #a4c3a2;
+  margin-top: 0;
+  font-size: 24px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(152, 152, 152, 0.28);
+  margin-bottom: 20px;
+}
+
+@keyframes fja_fadeEffect {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+#fja_map {
+  width: 100%;
+  height: 550px;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+#fja_mapTab {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.fja_placeTypeFilters {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  justify-content: space-evenly;
+}
+.fja_placeTypeFilters label {
+  display: flex;
   align-items: center;
+  padding: 8px 15px;
+  background-color: #ffffff;
+  border: 2px solid rgba(152, 152, 152, 0.28);
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+.fja_placeTypeFilters label:hover {
+  border-color: #a4c3a2;
+}
+.fja_placeTypeFilters label input[type=checkbox] {
+  margin-right: 8px;
+}
+.fja_placeTypeFilters label input[type=checkbox]:checked + span {
+  color: #a4c3a2;
+  font-weight: 600;
 }
 
-/* search input */
+.fja_filterContainer {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 30px 0;
+  position: relative;
+  border-top: 4px solid #5d5179;
+  max-width: 100%;
+}
+
+.fja_searchSortRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  align-items: center;
+  max-width: 100%;
+  width: 95%;
+}
+
 .fja_searchInput {
   flex: 1;
-  min-width: 200px;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: 12px 15px;
+  border: 2px solid #cccccc;
+  border-radius: 30px;
+  font-size: 15px;
+  min-width: 250px;
+}
+.fja_searchInput:focus {
+  border-color: #a4c3a2;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
 }
 
-/* sort drop */
 .fja_sortSelect {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  font-size: 14px;
-  min-width: 150px;
+  padding: 10px 15px;
+  border: 2px solid #cccccc;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #ffffff;
+  min-width: 180px;
+}
+.fja_sortSelect:focus {
+  border-color: #a4c3a2;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
 }
 
-/* tags filter styles https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_transitions/Using_CSS_transitions */
 .fja_tagFilters {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 15px;
+  margin: 20px 0;
 }
 
-/* tag buttons */
 .fja_tagButton {
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
+  background-color: rgba(152, 152, 152, 0.28);
+  border: none;
   border-radius: 20px;
-  padding: 6px 12px;
-  font-size: 13px;
+  padding: 8px 15px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-
-.fja_tagButton:hover, .fja_tagButton.hover {
+.fja_tagButton:hover {
   background-color: #e0e0e0;
-  transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
-
 .fja_tagButton.active {
-  background-color: #3498db;
+  background-color: #5d5179;
   color: white;
-  border-color: #2980b9;
 }
-
 .fja_tagButton.active:hover {
-  background-color: #2980b9;
+  background-color: rgb(69.5198019802, 60.5495049505, 90.4504950495);
 }
 
-/* phone tag filters https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details */
 .fja_tagFiltersPhone {
   display: none;
-  margin: 10px 0;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 15px 0;
 }
-
 .fja_tagFiltersPhone summary {
   padding: 12px 15px;
   background-color: #f0f0f0;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s ease;
-  position: relative;
+  font-weight: 600;
 }
-
-.fja_tagFiltersPhone summary::after {
-  content: "▼";
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: transform 0.3s ease;
-}
-
-.fja_tagFiltersPhone[open] summary::after {
-  transform: translateY(-50%) rotate(180deg);
-}
-
-.fja_tagFiltersPhone summary:hover {
-  background-color: #e0e0e0;
-}
-
-.fja_tagFiltersPhoneContent {
-  padding: 15px;
-  background-color: #f9f9f9;
+.fja_tagFiltersPhone .fja_tagFiltersPhoneContent {
+  padding: 15px 0;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-/* locaiton count */
 .fja_locationCountContainer {
+  display: inline-block;
+  background-color: #5d5179;
+  color: #ffffff;
+  padding: 5px 15px;
+  border-radius: 30px;
   font-size: 14px;
-  color: #666;
-  margin-bottom: 10px;
-  font-style: italic;
+  margin: 15px 0;
 }
 
-/* gallery https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout */
 .fja_locationGallery {
-  width: 100%;
-  max-width: 100%;
-  margin: 20px auto;
   display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  box-sizing: border-box;
+  gap: 25px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  margin: 30px 0;
 }
 
-/* cards */
 .fja_locationCard {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.2s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
   cursor: pointer;
+  border-top: 4px solid transparent;
+  padding: 15px !important;
+  margin: 10px !important;
 }
-
 .fja_locationCard:hover {
-  transform: translateY(-4px);
+  transform: translateY(-8px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+  border-top-color: #a4c3a2;
 }
-
 .fja_locationCard img {
   width: 100%;
-  height: 150px;
+  height: 180px;
   object-fit: cover;
 }
-
 .fja_locationCard h3 {
-  margin: 12px 15px 8px;
+  margin: 15px 20px 10px;
+  color: #a4c3a2;
   font-size: 18px;
 }
-
 .fja_locationCard p {
-  margin: 0 15px 12px;
-  color: #666;
+  margin: 0 20px 15px;
+  color: #555555;
   font-size: 14px;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  line-height: 1.5;
 }
 
-/* tags in loc card */
 .fja_cardTags {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  margin: 8px 15px;
+  gap: 6px;
+  margin: 15px 0;
+  margin-left: 5px !important;
+  padding-left: 5px !important;
 }
 
 .fja_tag {
   background-color: #f0f0f0;
-  border-radius: 12px;
-  padding: 3px 8px;
-  font-size: 11px;
-  color: #666;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 12px;
 }
-
-/* tag active */
 .fja_tag.active {
-  background-color: #3498db;
+  background-color: #5d5179;
   color: white;
-  position: relative;
-  animation: pulse 1s ease-in-out;
 }
 
-/* tag active pulse https://www.w3schools.com/cssref/atrule_keyframes.php */
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
 .fja_placeDetails {
-  margin: 0 15px 12px;
-  padding-top: 8px;
-  border-top: 1px solid #eee;
+  margin: 0 20px 15px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(152, 152, 152, 0.28);
   font-size: 13px;
-  color: #555;
+  color: #555555;
+  line-height: 1.5;
 }
 
-/* responsiveness https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries */
+#fja_controlPanel {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  border-top: 4px solid #a4c3a2;
+}
+
+.fja_selectLocationLabel {
+  font-weight: 600;
+  min-width: 60px;
+  display: inline-block;
+  color: #a4c3a2;
+  margin-bottom: 5px;
+}
+
+.fja_waypointLocationLabel {
+  margin: 15px 0 10px;
+  color: #a4c3a2;
+  font-size: 18px;
+  position: relative;
+}
+.fja_waypointLocationLabel:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 40px;
+  height: 3px;
+  background-color: #ecead0;
+}
+
+.fja_directionsControlButtons {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+  flex-wrap: wrap;
+}
+
+.fja_getRouteButton {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 15px;
+  background-color: #a4c3a2;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+.fja_getRouteButton:hover {
+  background-color: rgb(133.6666666667, 175, 131);
+}
+
+#fja_waypoints {
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid rgba(152, 152, 152, 0.28);
+  border-radius: 8px;
+  margin-top: 10px;
+  background-color: rgba(152, 152, 152, 0.28);
+}
+
+.fja_waypointLabel {
+  display: inline-block;
+  margin: 4px;
+  padding: 6px 12px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.fja_waypointLabel:hover {
+  background-color: rgba(152, 152, 152, 0.28);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.fja_waypointLabel input {
+  margin-right: 6px;
+}
+
+.fja_transportModeButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+.fja_transportModeButtons button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 15px;
+  background-color: #ffffff;
+  border: 2px solid #a4c3a2;
+  border-radius: 30px;
+  color: #a4c3a2;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.fja_transportModeButtons button:hover {
+  background-color: #a4c3a2;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+.fja_transportModeButtons button.active {
+  background-color: #a4c3a2;
+  color: #ffffff;
+}
+.fja_transportModeButtons button i {
+  margin-right: 8px;
+}
+
+#fja_transportMode {
+  display: inline-block;
+  background-color: #a4c3a2;
+  color: #ffffff;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 16px;
+  text-transform: uppercase;
+  margin: 10px 0;
+  letter-spacing: 1px;
+}
+
+#fja_directions {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+  border: 1px solid #cccccc;
+  max-height: 500px;
+  overflow-y: auto;
+}
+#fja_directions summary {
+  padding: 10px 15px;
+  background-color: rgba(152, 152, 152, 0.28);
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #a4c3a2;
+  transition: all 0.2s ease;
+}
+#fja_directions summary:hover {
+  background-color: rgba(139.25, 139.25, 139.25, 0.28);
+}
+
+.fja_currencyConverter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.fja_currencyConverter label {
+  font-weight: 600;
+  color: #a4c3a2;
+  margin-right: 5px;
+}
+.fja_currencyConverter #fja_amount {
+  width: 100px;
+  padding: 10px 15px;
+  border: 2px solid #cccccc;
+  border-radius: 8px;
+  font-size: 15px;
+}
+.fja_currencyConverter #fja_amount:focus {
+  border-color: #a4c3a2;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
+}
+.fja_currencyConverter select {
+  padding: 10px 15px;
+  border: 2px solid #cccccc;
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #ffffff;
+}
+.fja_currencyConverter select:focus {
+  border-color: #a4c3a2;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
+}
+.fja_currencyConverter input[type=button] {
+  padding: 10px 20px;
+  background-color: #a4c3a2;
+  color: #ffffff;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.fja_currencyConverter input[type=button]:hover {
+  background-color: rgb(148.8333333333, 185, 146.5);
+  transform: translateY(-2px);
+}
+
+#fja_conversionResult {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: rgba(152, 152, 152, 0.28);
+  border-radius: 8px;
+  border-left: 4px solid #5d5179;
+  display: inline-block;
+  font-weight: 600;
+  color: #a4c3a2;
+  min-width: 200px;
+}
+
+.fja_translationTool {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.fja_translationTool label {
+  font-weight: 600;
+  color: #a4c3a2;
+}
+.fja_translationTool #fja_translationText {
+  flex: 1;
+  min-width: 250px;
+  padding: 10px 15px;
+  border: 2px solid #cccccc;
+  border-radius: 8px;
+  font-size: 15px;
+}
+.fja_translationTool #fja_translationText:focus {
+  border-color: #a4c3a2;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
+}
+.fja_translationTool input[type=button] {
+  padding: 10px 20px;
+  background-color: #a4c3a2;
+  color: #ffffff;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.fja_translationTool input[type=button]:hover {
+  background-color: rgb(148.8333333333, 185, 146.5);
+  transform: translateY(-2px);
+}
+
+#fja_frenchTranslationContainer {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: rgba(152, 152, 152, 0.28);
+  border-radius: 8px;
+  border-left: 4px solid #5d5179;
+}
+#fja_frenchTranslationContainer label {
+  font-weight: 600;
+  color: #a4c3a2;
+  display: block;
+  margin-bottom: 5px;
+}
+#fja_frenchTranslationContainer #fja_translation {
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  border-left: 3px solid #5d5179;
+}
+#fja_frenchTranslationContainer .fja_translationButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+#fja_frenchTranslationContainer #fja_englishTranslationContainer {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: rgba(152, 152, 152, 0.28);
+  border-radius: 8px;
+  border-left: 4px solid #5d5179;
+}
+#fja_frenchTranslationContainer #fja_englishTranslationContainer label {
+  font-weight: 600;
+  color: #a4c3a2;
+  display: block;
+  margin-bottom: 5px;
+}
+#fja_frenchTranslationContainer #fja_englishTranslation {
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  border-left: 3px solid #5d5179;
+}
+
+.fja_challengersFooter {
+  background-color: #a4c3a2;
+  color: #ffffff;
+  padding: 40px 20px;
+  margin-top: 50px;
+  text-align: center;
+}
+.fja_challengersFooter p {
+  max-width: 600px;
+  margin: 0 auto 20px;
+  opacity: 0.9;
+}
+.fja_challengersFooter .fja_footerLinks {
+  margin-top: 20px;
+}
+.fja_challengersFooter .fja_footerLinks a {
+  color: #ffffff;
+  margin: 0 15px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+.fja_challengersFooter .fja_footerLinks a:hover {
+  color: #ecead0;
+  text-decoration: underline;
+}
+
+input[type=text],
+input[type=number],
+select {
+  padding: 10px 15px;
+  border: 2px solid #cccccc;
+  border-radius: 8px;
+  font-family: "Montserrat", "Arial", sans-serif;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+input[type=text]:focus,
+input[type=number]:focus,
+select:focus {
+  border-color: #a4c3a2;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 102, 51, 0.1);
+}
+
+button, input[type=button] {
+  background-color: #a4c3a2;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-family: "Montserrat", "Arial", sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+button:hover, input[type=button]:hover {
+  background-color: rgb(148.8333333333, 185, 146.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+button:active, input[type=button]:active {
+  transform: translateY(0);
+}
+
 @media (max-width: 650px) {
-  /* map responsive */
   #fja_map {
     width: 100%;
     height: 400px;
   }
-  /* stack search and filters */
   .fja_searchSortRow {
     flex-direction: column;
     align-items: stretch;
@@ -340,14 +715,6 @@
   .fja_searchInput, .fja_sortSelect {
     width: 100%;
   }
-  /* hiding regular tags and show phone tags */
-  .fja_tagFilters {
-    display: none;
-  }
-  .fja_tagFiltersPhone {
-    display: block;
-  }
-  /* waypoints responsiveness */
   #fja_waypoints {
     max-height: 150px;
   }
@@ -355,40 +722,149 @@
     display: block;
     margin: 5px 0;
   }
-  /* location gallery responsiveness */
-  .fja_locationGallery {
-    grid-template-columns: 1fr;
-  }
-  /* tag buttons for phone */
   .fja_tagButton {
     padding: 8px 10px;
     font-size: 12px;
     flex-grow: 1;
   }
+  .fja_directionsControlButtons {
+    flex-direction: column;
+  }
+  .fja_directionsControlButtons button {
+    width: 100%;
+  }
+}
+@media (max-width: 768px) {
+  .fja_challengersHeader {
+    width: 100%;
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .fja_challengersHeader h1 {
+    width: 100%;
+    box-sizing: border-box;
+    word-wrap: break-word;
+  }
+  .fja_challengersContainer {
+    padding: 0 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .fja_tabs button {
+    padding: 12px 8px;
+    font-size: 14px;
+    flex-basis: 50%;
+  }
+  .fja_transportModeButtons {
+    flex-direction: column;
+  }
+  .fja_transportModeButtons button {
+    width: 100%;
+  }
+  .fja_searchSortRow {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  .fja_searchSortRow > * {
+    width: 100%;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+  .fja_searchSortRow > *:last-child {
+    margin-bottom: 0;
+  }
+  .fja_searchSortRow .fja_searchInput {
+    width: 100%;
+    box-sizing: border-box;
+    margin-right: 0;
+  }
+  .fja_searchSortRow .fja_sortSelect {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .fja_filterContainer {
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .fja_locationGallery {
+    grid-template-columns: 1fr;
+  }
+  .fja_tagFilters {
+    display: none;
+  }
+  .fja_tagFiltersPhone {
+    display: block;
+  }
+  .fja_currencyConverter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .fja_currencyConverter #fja_amount, .fja_currencyConverter select {
+    width: 100%;
+  }
+  .fja_currencyConverter input[type=button] {
+    align-self: flex-end;
+  }
+  .fja_translationTool {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .fja_translationTool #fja_translationText {
+    width: 100%;
+    box-sizing: border-box;
+    min-width: unset;
+  }
+  .fja_translationTool input[type=button] {
+    width: 100%;
+    margin-top: 10px;
+    align-self: center;
+  }
+  #fja_frenchTranslationContainer {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .fja_translationButtons {
+    flex-direction: column;
+    width: 100%;
+  }
+  .fja_translationButtons input[type=button] {
+    width: 100%;
+  }
 }
 @media (min-width: 651px) and (max-width: 1000px) {
-  /* tablet screen */
   #fja_map {
     width: 100%;
     max-width: 100%;
   }
   .fja_locationGallery, .fja_filterContainer {
-    width: 100%;
     max-width: 100%;
   }
   .fja_locationGallery {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 }
+@media (min-width: 769px) and (max-width: 1024px) {
+  .fja_challengersContainer {
+    padding: 0 15px;
+  }
+  #fja_map {
+    height: 500px;
+  }
+  .fja_locationGallery {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
 @media (min-width: 1001px) {
-  /* laptop screen */
   #fja_map {
     width: 100%;
     max-width: 100%;
     height: 650px;
   }
   .fja_filterContainer {
-    width: 100%;
     max-width: 100%;
     padding: 20px;
   }
@@ -397,10 +873,119 @@
     max-width: 100%;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
-  /* Optional: add a max-width to prevent excessive stretching on ultra-wide screens */
-  body {
-    max-width: 1800px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
+}
+.fja_offlineContainer {
+  text-align: center;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.fja_offlineIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.fja_reloadButton {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: "Montserrat", sans-serif;
+  margin-top: 1rem;
+}
+
+.fja_countdownModal {
+  display: block;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.fja_countdownContent {
+  background-color: #a4c3a2;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  color: white;
+}
+
+#fja_countdownTimer {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 20px 0;
+  padding: 10px;
+  background-color: #5d5179;
+  border-radius: 8px;
+  color: #ecead0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.fja_countdownButtons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.fja_countdownButtons button {
+  padding: 8px 16px;
+  background-color: #5d5179;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.fja_countdownButtons button:hover {
+  background-color: #4d4169;
+}
+
+/* mini countdown */
+.fja_miniCountdown {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 8px 15px;
+  background-color: #a4c3a2;
+  border-radius: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 100;
+}
+
+#fja_expandCountdown {
+  background-color: #5d5179;
+  color: white;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
 }

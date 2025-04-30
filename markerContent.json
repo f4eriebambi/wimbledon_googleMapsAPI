@@ -13,7 +13,7 @@
     "content": "Wimbledon Common is a large open space perfect for walking, cycling, or enjoying a picnic. It's home to wildlife and the famous Windmill Museum.",
     "latitude": "51.4372",
     "longitude": "-0.2421",
-    "tags": ["nature", "walking", "landmark"]
+    "tags": ["nature", "walking", "landmark", "park"]
   },
   {
     "title": "Hotel du Vin Wimbledon",
@@ -53,7 +53,7 @@
     "content": "Enjoy a horse ride on Wimbledon Common with this long-established riding school offering lessons and hacks.",
     "latitude": "51.4285",
     "longitude": "-0.2219",
-    "tags": ["outdoor", "horse riding", "nature"]
+    "tags": ["outdoor", "horse riding", "nature", "attraction"]
   },
   {
     "title": "The All England Lawn Tennis Club (Tour Access)",
@@ -61,7 +61,7 @@
     "content": "Home of the Wimbledon Championships, the All England Club offers guided tours of the historic grounds, including Centre Court and press rooms (note: courts are not available for public play).",
     "latitude": "51.4342",
     "longitude": "-0.2146",
-    "tags": ["tennis", "tour", "landmark"]
+    "tags": ["tennis", "tour", "landmark", "stadium", "arena"]
   },
   {
     "title": "Wimbledon Park Tennis Courts",
@@ -69,7 +69,7 @@
     "content": "Wimbledon Park offers 20 public tennis courts available for booking. It's a popular spot for both locals and visitors to enjoy a match in the open air.",
     "latitude": "51.4324",
     "longitude": "-0.2039",
-    "tags": ["tennis", "public courts", "sports"]
+    "tags": ["tennis", "public courts", "sports", "stadium"]
   },
   {
     "title": "AELTC Community Sports Ground",
@@ -77,7 +77,7 @@
     "content": "This community sports ground near Raynes Park is run by the AELTC and open to the public for tennis bookings during select hours. It’s part of Wimbledon’s local legacy outreach.",
     "latitude": "51.4081",
     "longitude": "-0.2274",
-    "tags": ["tennis", "public", "grass", "community"]
+    "tags": ["tennis", "public", "community", "arena"]
   },
   {
     "title": "Centre Court",
@@ -85,7 +85,7 @@
     "content": "Centre Court is the most iconic tennis stadium at Wimbledon, known for hosting the biggest matches of The Championships. While not open for public play, it's accessible via guided tours.",
     "latitude": "51.4342",
     "longitude": "-0.2146",
-    "tags": ["tennis", "landmark", "tour", "main court"]
+    "tags": ["tennis", "landmark", "tour", "stadium"]
   },
   {
     "title": "No. 1 Court",
@@ -101,7 +101,7 @@
     "content": "Often referred to as the 'Graveyard of Champions,' No. 2 Court is known for its surprising upsets. Visitors can see it during All England Club tours.",
     "latitude": "51.4345",
     "longitude": "-0.2152",
-    "tags": ["tennis", "historic", "tour", "main court"]
+    "tags": ["tennis", "historic", "tour", "main court", "arena"]
   },
   {
     "title": "Aorangi Park Practice Courts",
@@ -109,7 +109,7 @@
     "content": "Located behind the main courts, Aorangi Park is where professional players practice during Wimbledon. It's occasionally visible to the public during events.",
     "latitude": "51.4356",
     "longitude": "-0.2165",
-    "tags": ["tennis", "practice", "professional", "not for play"]
+    "tags": ["tennis", "practice", "professional", "not for play", "stadium"]
   },
   {
     "title": "American Clay & Acrylic Courts",
@@ -117,6 +117,6 @@
     "content": "These six American clay courts and two acrylic surfaces are part of the club’s advanced training and development setup — not open to the public, but interesting for tennis enthusiasts.",
     "latitude": "51.4338",
     "longitude": "-0.2173",
-    "tags": ["tennis", "training", "surface", "not for play"]
+    "tags": ["tennis", "training", "stadium", "not for play"]
   }
 ]
